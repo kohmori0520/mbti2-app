@@ -1,0 +1,184 @@
+/* Apple Human Interface Guidelines 準拠のトークン */
+:root {
+  --color-text: #1d1d1f;
+  --color-text-secondary: #666666;
+  --color-text-caption: #979797;
+  --color-bg: #f5f5f7;
+  --color-surface: #ffffff;
+  --color-border: #eeeeee;
+  --color-accent: #007aff; /* iOS System Blue */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+* { box-sizing: border-box; }
+
+/* ベースタイポグラフィ */
+html, body { height: 100%; }
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* コンテナとグリッド */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px; /* モバイル */
+}
+@media (min-width: 768px) {
+  .container { padding: 0 24px; }
+}
+@media (min-width: 1024px) {
+  .container { padding: 0 32px; }
+}
+
+.grid { display: grid; gap: 16px; }
+.two { grid-template-columns: repeat(2, minmax(0,1fr)); }
+
+/* 見出しスケール（HIGより） */
+h1 { font-size: 28px; line-height: 1.25; margin: 0 0 20px; }
+h2 { font-size: 22px; line-height: 1.3; margin: 0 0 16px; }
+
+/* タイポグラフィユーティリティ（ガイド準拠） */
+.text-large-title { font-size: 34px; line-height: 1.2; margin-bottom: 24px; }
+.text-title-1 { font-size: 28px; line-height: 1.25; margin-bottom: 20px; }
+.text-title-2 { font-size: 22px; line-height: 1.3; margin-bottom: 16px; }
+.text-headline { font-size: 17px; font-weight: 600; margin-bottom: 12px; }
+.text-body { font-size: 17px; line-height: 1.5; margin-bottom: 16px; }
+.text-caption { font-size: 12px; color: var(--color-text-caption); margin-bottom: 8px; }
+
+/* キーワードチップ */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 16px; }
+.chip {
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+/* カードごとのアクセントを反映 */
+.card .chip { border-color: var(--color-accent); }
+
+/* 見出しのアクセント下線（必要箇所で .accent を付ける） */
+.text-headline.accent {
+  display: inline-block;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--color-accent);
+}
+
+/* カード */
+.card {
+  background: var(--color-surface);
+  border-radius: 16px; /* 標準カード */
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  border: none;
+}
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* 区切り線 */
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 16px 0;
+}
+
+/* ボタン（タッチターゲット44px） */
+button, .btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 12px; /* 標準ボタン */
+  padding: 12px 24px;
+  min-height: 44px;
+  font-weight: 600;
+  font-size: 17px;
+  transition: background-color .15s ease, box-shadow .15s ease, transform .05s ease;
+}
+.btn { background: var(--color-accent); color: #ffffff; }
+.btn:hover { background: #0056cc; }
+.btn:disabled { opacity: .3; cursor: not-allowed; }
+.btn.outline {
+  background: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+.btn.outline:hover { background: rgba(0,122,255,0.06); }
+
+/* 選択肢（カード風ボタン） */
+.option {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 16px;
+  border-radius: 12px;
+  min-height: 56px; /* 押しやすさ優先 */
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+  transition: transform .05s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.option:hover { box-shadow: var(--shadow-md); }
+.option:active { transform: scale(0.98); }
+.option:focus-visible {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow:
+    0 0 0 3px rgba(0,122,255,0.40), /* 太い青リング */
+    0 6px 16px rgba(0,122,255,0.20); /* 青みのある影 */
+}
+
+/* ボタンのフォーカスも同等に強化 */
+button:focus-visible,
+.btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(0,122,255,0.40),
+    0 6px 16px rgba(0,122,255,0.20);
+}
+
+/* プログレスバー */
+.progress {
+  height: 10px;
+  background: var(--color-border);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.progress > div {
+  height: 100%;
+  background: var(--color-accent);
+}
+
+/* テキストユーティリティ */
+.small { font-size: 12px; color: var(--color-text-secondary); }
+
+/* リンク */
+a { color: var(--color-accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ダークモード推奨スタイル */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #f5f5f7;
+    --color-text-secondary: #a3aaae;
+    --color-text-caption: #979797;
+    --color-bg: #000000;
+    --color-surface: #1c1c1e;
+    --color-border: #2c2c2e;
+  }
+
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+  .option { background: var(--color-surface); border-color: var(--color-border); }
+  .progress { background: var(--color-border); }
+
+  /* ダークモードでのフォーカスはコントラストを少し上げる */
+  .option:focus-visible,
+  button:focus-visible,
+  .btn:focus-visible {
+    box-shadow:
+      0 0 0 3px rgba(10,132,255,0.55),
+      0 6px 18px rgba(10,132,255,0.30);
+  }
+}

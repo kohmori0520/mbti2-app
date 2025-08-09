@@ -1,0 +1,674 @@
+[
+  {
+    "id": 1,
+    "axis": "behavior",
+    "question": "予定なしの休日は…",
+    "version": 2,
+    "options": [
+      {
+        "key": "A",
+        "label": "新しい場所やイベントに行く",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "家でゆっくり過ごす",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 2,
+    "axis": "behavior",
+    "question": "初めてのカフェを見つけたら…",
+    "version": 2,
+    "options": [
+      {
+        "key": "A",
+        "label": "迷わず入る",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "外から様子を見て考える",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 3,
+    "axis": "behavior",
+    "question": "仕事でわからないことが出たら…",
+    "weight": 1.11,
+    "options": [
+      {
+        "key": "A",
+        "label": "とりあえず手を動かして試す",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "調べてから動く",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "axis": "behavior",
+    "question": "急に良さそうな話が来たら…",
+    "version": 2,
+    "options": [
+      {
+        "key": "A",
+        "label": "深く考えず掴む",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "一旦考えてから決める",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 5,
+    "axis": "behavior",
+    "question": "誘われた飲み会が突然あったら…",
+    "options": [
+      {
+        "key": "A",
+        "label": "とりあえず行く",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "予定が合えば行く",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 6,
+    "axis": "behavior",
+    "question": "大事な会議の前夜に準備を…",
+    "options": [
+      {
+        "key": "A",
+        "label": "最後までやってから寝る",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "翌朝早く起きてやる",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ],
+    "weight": 1.23
+  },
+  {
+    "id": 7,
+    "axis": "behavior",
+    "question": "上司から『新しい仕事やってみない？』と言われたら…",
+    "options": [
+      {
+        "key": "A",
+        "label": "即OKする",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "詳細を聞いてから考える",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 8,
+    "axis": "decision",
+    "question": "旅行の計画は…",
+    "options": [
+      {
+        "key": "A",
+        "label": "現地で決める派",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "事前にしっかり決める派",
+        "score": {
+          "decision": -1
+        }
+      }
+    ],
+    "weight": 1.23
+  },
+  {
+    "id": 9,
+    "axis": "decision",
+    "question": "大きめの買い物は…",
+    "version": 2,
+    "weight": 1.11,
+    "options": [
+      {
+        "key": "A",
+        "label": "店で見て気に入ったら買う",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "口コミや性能を調べてから買う",
+        "score": {
+          "decision": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "axis": "decision",
+    "question": "料理を作るとき…",
+    "options": [
+      {
+        "key": "A",
+        "label": "レシピを見ずに感覚で作る",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "レシピ通りに作る",
+        "score": {
+          "decision": -1
+        }
+      }
+    ],
+    "weight": 1.23
+  },
+  {
+    "id": 11,
+    "axis": "decision",
+    "question": "新しいツールは…",
+    "version": 2,
+    "options": [
+      {
+        "key": "1",
+        "label": "まず触って覚える",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "説明書やチュートリアルを見る",
+        "score": {
+          "decision": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 12,
+    "axis": "decision",
+    "question": "会議でアイデアを出すなら…",
+    "version": 2,
+    "options": [
+      {
+        "key": "1",
+        "label": "思いついたらすぐ話す",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "頭の中で整理してから話す",
+        "score": {
+          "decision": -1
+        }
+      }
+    ],
+    "weight": 0.94
+  },
+  {
+    "id": 13,
+    "axis": "decision",
+    "question": "趣味を選ぶとき…",
+    "options": [
+      {
+        "key": "1",
+        "label": "ピンときたら始める",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "自分に合うか考えてから始める",
+        "score": {
+          "decision": -1
+        }
+      }
+    ],
+    "weight": 1.11
+  },
+  {
+    "id": 14,
+    "axis": "decision",
+    "question": "プレゼントを選ぶとき…",
+    "options": [
+      {
+        "key": "1",
+        "label": "インスピレーションで決める",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "相手の好みを調べて決める",
+        "score": {
+          "decision": -1
+        }
+      }
+    ],
+    "weight": 1.11
+  },
+  {
+    "id": 15,
+    "axis": "relation",
+    "question": "会議で意見が割れたら…",
+    "version": 2,
+    "weight": 1.23,
+    "options": [
+      {
+        "key": "1",
+        "label": "自分の意見を押す",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "双方をまとめる",
+        "score": {
+          "relation": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "axis": "relation",
+    "question": "グループ旅行なら…",
+    "version": 2,
+    "options": [
+      {
+        "key": "1",
+        "label": "進行役をやる",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "誰かに任せる",
+        "score": {
+          "relation": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 17,
+    "axis": "relation",
+    "question": "新人が困っていたら…",
+    "options": [
+      {
+        "key": "1",
+        "label": "声をかけて手助けする",
+        "score": {
+          "relation": -1
+        }
+      },
+      {
+        "key": "2",
+        "label": "必要そうなら助ける",
+        "score": {
+          "relation": 1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 18,
+    "axis": "relation",
+    "question": "飲み会で話が途切れたら…",
+    "options": [
+      {
+        "key": "1",
+        "label": "自分から話を振る",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "誰かが話すのを待つ",
+        "score": {
+          "relation": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 19,
+    "axis": "relation",
+    "question": "チームで成果が出たら…",
+    "options": [
+      {
+        "key": "1",
+        "label": "自分の貢献を伝える",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "チーム全体の成果として話す",
+        "score": {
+          "relation": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 20,
+    "axis": "relation",
+    "question": "仕事の進め方が合わない人がいたら…",
+    "options": [
+      {
+        "key": "1",
+        "label": "自分のやり方を提案する",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "相手に合わせて調整する",
+        "score": {
+          "relation": -1
+        }
+      }
+    ],
+    "weight": 1.23
+  },
+  {
+    "id": 21,
+    "axis": "relation",
+    "question": "SNSで意見を発信するとき…",
+    "options": [
+      {
+        "key": "1",
+        "label": "強めに主張する",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "柔らかく表現する",
+        "score": {
+          "relation": -1
+        }
+      }
+    ],
+    "weight": 1.11
+  },
+  {
+    "id": 22,
+    "axis": "value",
+    "question": "職場が大きく変わるなら…",
+    "version": 2,
+    "weight": 1.23,
+    "options": [
+      {
+        "key": "1",
+        "label": "ワクワクする",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "不安になる",
+        "score": {
+          "value": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "axis": "value",
+    "question": "同じ作業を続けるのは…",
+    "version": 2,
+    "options": [
+      {
+        "key": "1",
+        "label": "すぐ飽きる",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "落ち着く",
+        "score": {
+          "value": -1
+        }
+      }
+    ],
+    "weight": 1.23
+  },
+  {
+    "id": 24,
+    "axis": "value",
+    "question": "引っ越すなら…",
+    "version": 2,
+    "options": [
+      {
+        "key": "1",
+        "label": "新しい街を選びたい",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "慣れた場所に住みたい",
+        "score": {
+          "value": -1
+        }
+      }
+    ],
+    "weight": 1.23
+  },
+  {
+    "id": 25,
+    "axis": "value",
+    "question": "会社で部署異動があったら…",
+    "options": [
+      {
+        "key": "1",
+        "label": "新しいことに挑戦したい",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "今の仕事を続けたい",
+        "score": {
+          "value": -1
+        }
+      }
+    ],
+    "weight": 1.23
+  },
+  {
+    "id": 26,
+    "axis": "value",
+    "question": "毎年旅行に行くなら…",
+    "options": [
+      {
+        "key": "1",
+        "label": "毎回違う場所に行く",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "気に入った場所に何度も行く",
+        "score": {
+          "value": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 27,
+    "axis": "value",
+    "question": "趣味を始めるとき…",
+    "options": [
+      {
+        "key": "1",
+        "label": "これまでやったことない分野を選ぶ",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "経験がある分野を深める",
+        "score": {
+          "value": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 28,
+    "axis": "value",
+    "question": "仕事の進め方を…",
+    "options": [
+      {
+        "key": "1",
+        "label": "常に改善したい",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "今の方法を守りたい",
+        "score": {
+          "value": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 29,
+    "axis": "relation",
+    "question": "知らない人と話すのは…",
+    "options": [
+      {
+        "key": "1",
+        "label": "わりと平気",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "ちょっと苦手",
+        "score": {
+          "relation": -1
+        }
+      }
+    ],
+    "weight": 1.29
+  },
+  {
+    "id": 30,
+    "axis": "decision",
+    "question": "発表の直前は…",
+    "version": 2,
+    "weight": 1.23,
+    "options": [
+      {
+        "key": "1",
+        "label": "とにかくやってみようと思う",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "2",
+        "label": "できる限り準備して臨む",
+        "score": {
+          "decision": -1
+        }
+      }
+    ]
+  }
+]
