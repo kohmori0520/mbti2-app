@@ -47,9 +47,9 @@ jobs:
       - run: npm run build
       - name: Start local preview server
         run: |
-          nohup npm run preview -- --port 4173 --strictPort >/dev/null 2>&1 &
-          for i in {1..30}; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4173)
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort >/dev/null 2>&1 &
+          for i in {1..10}; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:4173 || echo 000)
             if [ "$code" = "200" ]; then
               echo "Local preview is ready."
               break
