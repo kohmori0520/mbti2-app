@@ -2,6 +2,8 @@ import React from 'react'
 import type { Axes, Persona } from '../logic/scoring'
 import type { PersonaDetailsMap, AiInsight } from '../types'
 import details from '../data/persona_details.json'
+import { Link } from 'react-router-dom'
+import { makeTypeAvatar } from '../utils/avatar'
 
 export default function ResultView({ persona, axes, secondary, conf } : { persona: Persona, axes: Axes, secondary?: Persona, conf?: number }) {
   const map = details as unknown as PersonaDetailsMap
@@ -35,12 +37,19 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
     return () => { abort = true }
   }, [persona.code])
   const accent = detail?.color
+  const heroImg = (detail as any)?.image || (accent ? makeTypeAvatar(persona.code, accent) : null)
   return (
     <div className="card" style={accent ? ({ ['--color-accent' as any]: accent } as React.CSSProperties) : undefined}>
       <div className="text-caption">結果</div>
       <h2 className="text-title-2" style={{marginBottom: 4}}>{detail?.title ?? persona.name}</h2>
       <div className="small" style={{marginBottom: 8, color: 'var(--color-text-secondary)'}}>{detail?.oneLiner ?? persona.summary}</div>
       {secondary && <div className="small" style={{marginBottom: 12}}>サブタイプ：{secondary.name}</div>}
+
+      {heroImg && (
+        <div style={{border:'1px solid rgba(0,0,0,0.08)', borderRadius:12, overflow:'hidden', background:'#f5f5f7', marginBottom:12}}>
+          <img src={heroImg} alt={detail?.title ?? persona.name} style={{width:'100%', aspectRatio:'4/3', objectFit:'cover', display:'block'}}/>
+        </div>
+      )}
 
       {detail?.keywords?.length ? (
         <div className="chips">
@@ -129,6 +138,11 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
 
       <hr />
       <p className="small">※ プロトタイプの推定です。精度は今後の学習で改善されます。</p>
+      <div style={{marginTop:8}}>
+        <Link className="btn outline" to={`/types/${persona.code}`}>このタイプの詳細を見る</Link>
+        <span style={{display:'inline-block', width:8}} />
+        <Link className="btn outline" to="/types">タイプ辞典へ</Link>
+      </div>
       <div style={{display:'flex', gap:8, marginTop: 16}}>
         <a className="btn outline" href="#" onClick={(e)=>{e.preventDefault();
           try {
