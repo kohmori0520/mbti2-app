@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import type { Question } from './types'
 import questions from './data/personality_questions.json'
 import QuestionCard from './components/QuestionCard'
@@ -70,6 +70,32 @@ export default function App(){
     } catch {}
     return { primaryPersona, secondaryPersona, axes, conf }
   }, [done])
+
+  // 回答の自動復元（初回のみ）
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('answers')
+      if (!saved) return
+      const parsed = JSON.parse(saved) as Record<string, 'A'|'B'>
+      // 文字キーを数値キーに
+      const restored: Answers = {}
+      for (const [k, v] of Object.entries(parsed)) {
+        const id = Number(k)
+        if (Number.isFinite(id) && (v === 'A' || v === 'B')) restored[id] = v
+      }
+      setAnswers(restored)
+      // 次の未回答インデックスへ
+      const answeredIds = new Set(Object.keys(restored).map(n => Number(n)))
+      let nextIdx = 0
+      for (let i = 0; i < qs.length; i++) {
+        if (!answeredIds.has(qs[i].id)) { nextIdx = i; break }
+        nextIdx = i + 1
+      }
+      setIndex(Math.min(nextIdx, qs.length))
+    } catch {}
+  // qsは固定のため初回のみ
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="container">

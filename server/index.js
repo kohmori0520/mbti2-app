@@ -1,10 +1,13 @@
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
+import rateLimit from 'express-rate-limit'
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+// 簡易レート制限
+app.use('/api/', rateLimit({ windowMs: 60_000, max: 60 }))
 
 // ヘルスチェック
 app.get('/api/health', (_req, res) => {
@@ -56,11 +59,20 @@ app.post('/api/analyze', async (req, res) => {
       max_tokens: 600
     }
 
-    const r = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify(body)
-    })
+    // タイムアウト付きfetch
+    const controller = new AbortController()
+    const timeout = setTimeout(()=>controller.abort(), 15_000)
+    let r
+    try {
+      r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify(body),
+        signal: controller.signal
+      })
+    } finally {
+      clearTimeout(timeout)
+    }
     if (!r.ok) {
       const t = await r.text()
       return res.status(502).json({ error: 'upstream_error', detail: t })
