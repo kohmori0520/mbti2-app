@@ -14,8 +14,52 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true })
 })
 
-// 簡易キャッシュ（プロセス内）
+// 簡易キャッシュ（プロセス内） + TTL
 const cache = new Map()
+const CACHE_TTL_MS = Number(process.env.ANALYZE_CACHE_TTL_MS || 60 * 60 * 1000) // 1h
+
+function getCache(key) {
+  const v = cache.get(key)
+  if (!v) return null
+  if (Date.now() > v.expires) { cache.delete(key); return null }
+  return v.data
+}
+
+function setCache(key, data) {
+  cache.set(key, { data, expires: Date.now() + CACHE_TTL_MS })
+}
+
+async function fetchOpenAIWithRetry(body, apiKey) {
+  const url = 'https://api.openai.com/v1/chat/completions'
+  const attempts = Number(process.env.ANALYZE_RETRY_ATTEMPTS || 3)
+  const timeoutMs = Number(process.env.ANALYZE_TIMEOUT_MS || 15000)
+  let lastErr
+  for (let i = 0; i < attempts; i++) {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify(body),
+        signal: controller.signal
+      })
+      clearTimeout(timeout)
+      if (r.ok) return r
+      const t = await r.text()
+      lastErr = new Error(`upstream ${r.status}: ${t}`)
+    } catch (e) {
+      lastErr = e
+    } finally {
+      clearTimeout(timeout)
+    }
+    if (i < attempts - 1) {
+      const backoff = 500 * Math.pow(2, i)
+      await new Promise(res => setTimeout(res, backoff))
+    }
+  }
+  throw lastErr
+}
 
 app.post('/api/analyze', async (req, res) => {
   try {
@@ -24,7 +68,8 @@ app.post('/api/analyze', async (req, res) => {
       return res.status(400).json({ error: 'invalid request' })
     }
     const key = JSON.stringify({ personaCode, axes, secondaryCode })
-    if (cache.has(key)) return res.json(cache.get(key))
+    const cached = getCache(key)
+    if (cached) return res.json(cached)
 
     const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) {
@@ -60,19 +105,7 @@ app.post('/api/analyze', async (req, res) => {
     }
 
     // タイムアウト付きfetch
-    const controller = new AbortController()
-    const timeout = setTimeout(()=>controller.abort(), 15_000)
-    let r
-    try {
-      r = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-        body: JSON.stringify(body),
-        signal: controller.signal
-      })
-    } finally {
-      clearTimeout(timeout)
-    }
+    const r = await fetchOpenAIWithRetry(body, apiKey)
     if (!r.ok) {
       const t = await r.text()
       return res.status(502).json({ error: 'upstream_error', detail: t })
@@ -82,7 +115,7 @@ app.post('/api/analyze', async (req, res) => {
     // JSON抽出（万一テキストが混ざっても{}で囲まれた最初の部分を取る）
     const match = txt.match(/\{[\s\S]*\}/)
     const json = match ? JSON.parse(match[0]) : JSON.parse(txt)
-    cache.set(key, json)
+    setCache(key, json)
     res.json(json)
   } catch (e) {
     res.status(500).json({ error: 'internal_error', detail: String(e?.message || e) })
