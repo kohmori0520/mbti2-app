@@ -13,12 +13,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     outputs:
-      preview_url: ${{ steps.vercel.outputs.PREVIEW_URL }}
+      preview_url: ${{ steps.vercel.outputs.PREVIEW_URL || steps.vercel.outputs.preview-url || steps.vercel.outputs.DEPLOYMENT_URL || steps.vercel.outputs.deployment-url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm }
       - run: npm ci
+      - name: Install Vercel CLI (for action internal usage)
+        run: npm install -g vercel@latest
       - name: Deploy to Vercel (Preview)
         id: vercel
         uses: BetaHuhn/deploy-to-vercel-action@v1
