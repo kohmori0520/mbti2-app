@@ -7,7 +7,8 @@ dist-ssr/
 analyze/
 weight_suggestions.json
 *.csv
-scripts/
+# keep scripts published; comment out next line if you want to hide scripts
+# scripts/
 
 .env
 .env.*

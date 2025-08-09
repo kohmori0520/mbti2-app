@@ -62,10 +62,10 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
           )}
           <div className="text-headline accent" style={{marginTop: 8}}>スコア概要</div>
           <div style={{display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, marginTop: 8}}>
-            <AxisBar name="行動" value={axes.behavior} />
-            <AxisBar name="意思" value={axes.decision} />
-            <AxisBar name="対人" value={axes.relation} />
-            <AxisBar name="価値" value={axes.value} />
+            <AxisBar name="行動" value={axes.behavior} accent={accent} />
+            <AxisBar name="意思" value={axes.decision} accent={accent} />
+            <AxisBar name="対人" value={axes.relation} accent={accent} />
+            <AxisBar name="価値" value={axes.value} accent={accent} />
           </div>
         </div>
         <div>
@@ -98,14 +98,14 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
       <div>
         <div className="text-headline accent" style={{display:'flex', alignItems:'center', gap:8}}>
           <span>AI解析</span>
-          <button className="btn outline" onClick={()=>{
-            // 再取得
+          <button className="btn outline" disabled={loading} onClick={()=>{
+            if (loading) return
             setAi(null); setError(null); setLoading(true);
             fetch('/api/analyze', {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ personaCode: persona.code, axes, secondaryCode: secondary?.code })
             }).then(r=>r.json()).then(d=>setAi(d as AiInsight)).catch(()=>setError('取得に失敗しました')).finally(()=>setLoading(false))
-          }}>再生成</button>
+          }}>{loading ? '生成中…' : '再生成'}</button>
         </div>
         {loading && <div className="small">生成中…</div>}
         {error && <div className="small" style={{color:'#FF3B30'}}>エラー: {error}</div>}
@@ -130,8 +130,20 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
       <hr />
       <p className="small">※ プロトタイプの推定です。精度は今後の学習で改善されます。</p>
       <div style={{display:'flex', gap:8, marginTop: 16}}>
-        <a className="btn outline" href={location.origin}>もう一度</a>
-        <a className="btn" href="#" onClick={(e)=>{e.preventDefault();navigator.share?.({title:'診断結果', text:`私は${detail?.title ?? persona.name}でした！`} )}}>結果をシェア</a>
+        <a className="btn outline" href="#" onClick={(e)=>{e.preventDefault();
+          try {
+            localStorage.removeItem('answers')
+            // ログは任意で保持/削除。完全リセットにする
+            localStorage.removeItem('answerLogs')
+            localStorage.removeItem('resultLogs')
+          } catch {}
+          location.href = location.origin
+        }}>もう一度</a>
+        <a className="btn" href="#" onClick={(e)=>{e.preventDefault();
+          const text = `私は${detail?.title ?? persona.name}でした！\n${location.href}`
+          if (navigator.share) { navigator.share({ title: '診断結果', text }).catch(()=>{}) }
+          else { navigator.clipboard?.writeText(text).catch(()=>{}); alert('結果をコピーしました') }
+        }}>結果をシェア</a>
         <a className="btn outline" href="#" onClick={(e)=>{
           e.preventDefault()
           try {
@@ -154,13 +166,13 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
   )
 }
 
-function AxisBar({ name, value }:{ name: string, value: number }){
+function AxisBar({ name, value, accent }:{ name: string, value: number, accent?: string }){
   const pct = (Math.max(-7, Math.min(7, value)) + 7) / 14 * 100
   return (
     <div>
       <div className="small" style={{marginBottom:6}}>{name}</div>
       <div className="progress">
-        <div style={{ width: `${pct}%` }} />
+        <div style={{ width: `${pct}%`, background: accent || undefined }} />
       </div>
     </div>
   )
