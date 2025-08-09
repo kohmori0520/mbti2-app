@@ -3,6 +3,12 @@ import type { Question } from './types'
 import questions from './data/personality_questions.json'
 import QuestionCard from './components/QuestionCard'
 import ProgressBar from './components/ProgressBar'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import { Link } from 'react-router-dom'
+import { makeTypeAvatar } from './utils/avatar'
+import details from './data/persona_details.json'
+import type { PersonaDetailsMap } from './types'
 import { aggregate, normalize, pickPersona, PERSONAS, aggregateWithCounts, normalizeByCounts, confidence } from './logic/scoring'
 
 type Answers = Record<number, 'A'|'B'>
@@ -98,36 +104,120 @@ export default function App(){
   }, [])
 
   return (
-    <div className="container">
-      <header style={{marginBottom: 24}}>
-        <h1 className="text-title-1">次世代タイプ診断</h1>
-        <div className="small">全{qs.length}問・約3〜5分</div>
-      </header>
-
-      {!done ? (
-        <>
-          <ProgressBar progress={progress} />
-          <div style={{height: 16}} />
-          <QuestionCard q={qs[index]} onPick={handlePick} onBack={handleBack} onSkip={handleSkip} canBack={index>0} />
-          <div style={{height: 16}} />
-          <div className="card">
-            <div className="small">A/Bは直感でOK。各ボタンは最小44pxのタッチ領域で設計。</div>
-          </div>
-        </>
-      ) : (
-        <>
-          <ResultView persona={primaryPersona!} axes={axes!} secondary={secondaryPersona!} conf={conf} />
-          <div style={{height: 16}} />
-          <div className="card">
-            <h2>タイプ一覧</h2>
-            <ul>
-              {PERSONAS.map(p => (
-                <li key={p.code} className="small">{p.code}：{p.name} - {p.summary}</li>
-              ))}
-            </ul>
-          </div>
-        </>
-      )}
+    <div className="app-layout">
+      <Header 
+        progress={!done ? progress : undefined} 
+        showTitle={true}
+        variant="default"
+      />
+      
+      <main className="app-main">
+        <div className="container">
+          {!done ? (
+            <>
+              <div className="intro-section">
+                <h1 className="text-title-1">次世代タイプ診断</h1>
+                <div className="intro-meta">
+                  <span className="question-count">全{qs.length}問</span>
+                  <span className="time-estimate">3〜5分で完了</span>
+                </div>
+                <p className="intro-description">
+                  あなたの本当の性格を科学的に分析します。
+                  直感で答えるだけで、詳細な結果を得られます。
+                </p>
+              </div>
+              
+              <div className="question-section">
+                <ProgressBar progress={progress} />
+                <div style={{height: 24}} />
+                <QuestionCard 
+                  q={qs[index]} 
+                  onPick={handlePick} 
+                  onBack={handleBack} 
+                  onSkip={handleSkip} 
+                  canBack={index>0} 
+                />
+              </div>
+              
+              <div className="help-section">
+                <div className="card help-card">
+                  <div className="help-content">
+                    <div className="help-icon">💡</div>
+                    <div>
+                      <div className="text-headline">Tips</div>
+                      <div className="small">
+                        直感で選んでOK。考えすぎずに、自然な反応を選んでください。
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="result-section">
+                <ResultView 
+                  persona={primaryPersona!} 
+                  axes={axes!} 
+                  secondary={secondaryPersona!} 
+                  conf={conf} 
+                />
+              </div>
+              
+              <div className="personas-section">
+                <div className="card">
+                  <div className="section-header">
+                    <h2 className="text-title-2">全タイプ一覧</h2>
+                    <p className="section-description small">
+                      気になるタイプをクリックして詳細を確認してみましょう
+                    </p>
+                  </div>
+                  <div className="type-cards-grid">
+                    {PERSONAS.map(p => {
+                      const map = details as unknown as PersonaDetailsMap
+                      const detail = map[p.code]
+                      const avatar = detail ? makeTypeAvatar(p.code, detail.color) : null
+                      
+                      return (
+                        <Link 
+                          key={p.code} 
+                          to={`/types/${p.code}`} 
+                          className="type-card"
+                          style={detail?.color ? ({ ['--type-accent' as any]: detail.color } as React.CSSProperties) : undefined}
+                        >
+                          {avatar && (
+                            <div className="type-card-avatar">
+                              <img src={avatar} alt={p.name} />
+                            </div>
+                          )}
+                          <div className="type-card-content">
+                            <div className="type-card-code">{p.code}</div>
+                            <div className="type-card-name">{p.name}</div>
+                            <div className="type-card-summary small">{detail?.oneLiner || p.summary}</div>
+                            {detail?.keywords?.slice(0, 3).map((keyword, i) => (
+                              <span key={i} className="type-card-tag">{keyword}</span>
+                            ))}
+                          </div>
+                          <div className="type-card-arrow">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                              <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </main>
+      
+      <Footer 
+        showDetails={done}
+        variant={done ? 'result' : 'default'}
+      />
     </div>
   )
 }

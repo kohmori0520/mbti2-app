@@ -1,142 +1,232 @@
-### 次世代タイプ診断（mbti2-app）
+# 🧠 次世代タイプ診断（mbti2-app）
 
-- **技術**: Vite + React + TypeScript
-- **機能**: 4軸スコアから12タイプへマッピング / キーボード操作 / バック・スキップ / 回答の自動復元 / 重み付きスコアリング / 信頼度スコア / AI分析 / ログ出力と解析 / 動的OG画像
+> **3分で判定！あなたの性格タイプを AI が科学的に分析**
+
+<div align="center">
+
+![Next.js](https://img.shields.io/badge/Next.js-React-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-v5.5-blue)
+![AI Powered](https://img.shields.io/badge/AI-Powered-green)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-black)
+
+</div>
 
 ---
 
-### セットアップ
+## ✨ 特徴
 
+| 機能 | 説明 |
+|------|------|
+| 🎯 **高精度診断** | 4軸スコアから12の独自タイプへマッピング |
+| 🤖 **AI分析** | OpenAI による詳細な性格分析 |
+| ⚡ **高速操作** | キーボード操作対応（1/2キー、矢印キー） |
+| 💾 **自動復元** | 回答の自動保存・復元機能 |
+| 📊 **データ分析** | ログ出力・CSV エクスポート |
+| 🖼️ **動的OG画像** | 結果に応じた共有用画像を自動生成 |
+| 📱 **レスポンシブ** | PC・スマホ対応 |
+
+---
+
+## 🚀 クイックスタート
+
+### 1️⃣ セットアップ
 ```bash
-npm i
+# 依存関係のインストール
+npm install
+
+# 環境変数の設定
+cp .env.example .env
+# .env に OPENAI_API_KEY を設定
 ```
 
----
-
-### 開発（ローカル）
-
-- フロントエンド（Vite）
+### 2️⃣ 開発環境の起動
 ```bash
+# フロントエンド（React + Vite）
 npm run dev
-# http://localhost:5173
-```
+# 🌐 http://localhost:5173 で起動
 
-- AI分析API（Express）
-```bash
+# AI分析API（Express サーバー）※別ターミナルで
 npm run api:dev
-# http://localhost:8787 に /api/analyze が立ち上がります
-# Vite は /api を 8787 にプロキシします（vite.config.ts）
+# 🌐 http://localhost:8787/api/analyze で起動
 ```
 
-- Edge OG画像のローカル確認（任意）
-  - `api/og.tsx` は Vercel の Edge Function 用です。Vite の `npm run dev` では動きません。
-  - ローカルで試す場合は `vercel dev` を利用してください。
+### 3️⃣ ブラウザでアクセス
+🎉 `http://localhost:5173` を開いて診断開始！
 
 ---
 
-### 必要な環境変数（.env）
+## 🏗️ プロジェクト構成
 
-- `OPENAI_API_KEY`（AI分析で必須）
-- 任意調整用
-  - `ANALYZE_CACHE_TTL_MS`（デフォルト 3600000ms）
-  - `ANALYZE_RETRY_ATTEMPTS`（デフォルト 3）
-  - `ANALYZE_TIMEOUT_MS`（デフォルト 15000）
-
-`.env` を用意後、ローカルAPIを再起動してください。
-
----
-
-### データスキーマ検証（開発時）
-
-`src/main.tsx` で `zod` により以下JSONを起動時チェックします（DEVのみ）:
-- `src/data/personality_questions.json`
-- `src/data/persona_details.json`
-
-不整合がある場合はブラウザコンソールに警告が出ます。
-
----
-
-### 診断フローの主な仕様
-
-- A/B キーは内部的に `'A'|'B'` を使用（UIの 1/2 キー押下は `A/B` にマップ）
-- 質問には `weight` を設定可能（集計時に反映）
-- 軸ごとの回答数に基づく正規化 + 信頼度スコア算出
-- 回答・結果は `localStorage` にログ保存（UI から CSV 出力可能）
-- 「もう一度」ボタンは `localStorage` をクリアして最初からやり直し
-
----
-
-### ログ解析と重み更新
-
-1) UI の結果画面から「ログをCSVで保存」
-
-2) 解析（デフォルトの最小サンプル数 minN=20。小さくするなら第2引数）
-```bash
-npm run analyze:logs -- \
-  "/path/to/personality_logs.csv" 10
-# 出力: weight_suggestions.json
+```
+📁 mbti2-app/
+├── 📄 package.json          # 依存関係とスクリプト
+├── 🌐 api/
+│   ├── analyze.ts           # AI分析API（Serverless）
+│   └── og.tsx              # 動的OG画像生成（Edge Function）
+├── 🖥️ server/
+│   └── index.js            # ローカル開発用APIサーバー
+├── ⚛️ src/
+│   ├── components/         # UIコンポーネント
+│   ├── data/              # 質問データとタイプ定義
+│   ├── logic/             # スコア計算ロジック
+│   ├── pages/             # ページコンポーネント
+│   └── utils/             # ユーティリティ関数
+└── 🛠️ scripts/
+    ├── analyze_logs.mjs    # ログ解析スクリプト
+    └── apply_weight_suggestions.mjs # 重み調整スクリプト
 ```
 
-3) 提案の適用（`src/data/personality_questions.json` を更新。バックアップ自動作成）
+---
+
+## ⚙️ 環境変数設定
+
 ```bash
+# .env ファイルに以下を設定
+OPENAI_API_KEY=your-openai-api-key-here
+
+# オプション（デフォルト値あり）
+ANALYZE_CACHE_TTL_MS=3600000     # キャッシュ有効期間（1時間）
+ANALYZE_RETRY_ATTEMPTS=3         # リトライ回数
+ANALYZE_TIMEOUT_MS=15000         # タイムアウト（15秒）
+```
+
+> ⚠️ **重要**: `.env` 設定後は `npm run api:dev` を再起動してください
+
+---
+
+## 🔍 診断システムの仕組み
+
+### 📋 診断フロー
+1. **質問回答** - A/Bの二択質問に回答
+2. **スコア計算** - 4軸（外向/内向、感覚/直観、思考/感情、判断/知覚）でスコアリング
+3. **タイプ判定** - 12の独自タイプにマッピング
+4. **AI分析** - OpenAI による詳細分析
+5. **結果表示** - 強みや成長ポイントを表示
+
+### 🎮 操作方法
+| キー | 動作 |
+|------|------|
+| `1` or `A` | 選択肢A |
+| `2` or `B` | 選択肢B |
+| `←` | 前の質問 |
+| `→` | 次の質問 |
+| `Enter` | 確定 |
+
+---
+
+## 📊 データ分析機能
+
+### ログの保存とエクスポート
+診断結果画面の「**ログをCSVで保存**」ボタンからデータをダウンロード
+
+### ログ解析による重み調整
+```bash
+# 1. ログファイルを解析（最小サンプル数: 20）
+npm run analyze:logs -- "/path/to/personality_logs.csv" 10
+
+# 2. 重み提案の適用（バックアップ自動作成）
 npm run apply:weights
 ```
 
-Tips:
-- サンプルが少ないと `No suggestions to apply` になります。`minN` を下げるか、データを集めてください。
-- zsh でスペースや括弧があるパスは必ずクォートしてください。
+> 💡 **Tip**: サンプル数が少ない場合は第2引数で最小サンプル数を下げてください
 
 ---
 
-### 共有とOG画像（画像の事前用意は不要）
+## 🖼️ 動的OG画像
 
-- 画像は `api/og.tsx` が動的生成します。以下URLをそのまま開いて確認できます：
+### 🎨 画像の確認方法
 ```
-https://<your-domain>/api/og?title=タイプT1&subtitle=共感的リーダー&accent=%23007AFF
+https://your-domain/api/og?title=タイプT1&subtitle=リーダー型&accent=%23007AFF
 ```
-  - 色の `#` は `%23` にエンコードしてください。
+> ⚠️ **注意**: `#` は `%23` にエンコードしてください
 
-- 共通OG画像を使う（最短）
-  - `index.html` の `<head>` に以下を追加（例）：
+### 📝 HTML設定例
 ```html
 <meta property="og:title" content="次世代タイプ診断" />
-<meta property="og:description" content="あなたのタイプを3分で診断。" />
-<meta property="og:image" content="https://<your-domain>/api/og?title=次世代タイプ診断&subtitle=3分で判定&accent=%23007AFF" />
+<meta property="og:description" content="あなたのタイプを3分で診断" />
+<meta property="og:image" content="https://your-domain/api/og?title=次世代タイプ診断&subtitle=3分で判定&accent=%23007AFF" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 ```
 
-- タイプ別にOGを変える（本格運用）
-  - SPAはクローラーがJSを実行しないため、共有用のサーバールート（例 `https://<domain>/share/T1`）を Edge/Functions で用意し、そのHTMLの `<head>` にタイプ別の `og:*` を埋め込み、`og:image` に `/api/og?...` を指定してください。
+---
+
+## 🚢 デプロイ（Vercel）
+
+### 1️⃣ Vercel設定
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/analyze.ts": { "runtime": "nodejs18.x" },
+    "api/og.tsx": { "runtime": "edge" }
+  }
+}
+```
+
+### 2️⃣ 環境変数の設定
+Vercel Dashboard → Project Settings → Environment Variables
+- `OPENAI_API_KEY`
+- その他のオプション変数
+
+### 3️⃣ 自動デプロイ
+メインブランチにプッシュすると自動でデプロイされます 🎉
 
 ---
 
-### デプロイ（Vercel）
+## 🔧 よくある問題と解決方法
 
-- `vercel.json`（ビルド: `npm run build`, 出力: `dist/`）
-- API
-  - `api/analyze.ts`: サーバレス関数（再試行・タイムアウト・簡易キャッシュ）
-  - `api/og.tsx`: Edge Function（動的OG画像）
-- Git連携
-  - Production Branch に指定したブランチへ push で自動デプロイ
-  - 環境変数は Vercel の Project Settings → Environment Variables で設定
+### ❌ `ECONNREFUSED` エラー
+```bash
+# 解決方法: APIサーバーを起動
+npm run api:dev
+```
+
+### ❌ OG画像の色が反映されない
+```bash
+# 解決方法: # を %23 にエンコード
+❌ #007AFF
+✅ %23007AFF
+```
+
+### ❌ zshでファイルパスエラー
+```bash
+# 解決方法: パスをクォートで囲む
+npm run analyze:logs -- "/path/with spaces/file.csv"
+```
+
+### ❌ データスキーマエラー
+開発者コンソールで警告を確認し、以下のJSONファイルを修正：
+- `src/data/personality_questions.json`
+- `src/data/persona_details.json`
 
 ---
 
-### よくあるエラーと対処
+## 🧪 技術スタック
 
-- Vite の `/api/analyze` が `ECONNREFUSED`
-  - `npm run api:dev` を別ターミナルで起動していません。起動してください。
-
-- OG 画像が色指定で反映されない
-  - `#` を `%23` にエンコードしてください（例: `#007AFF` → `%23007AFF`）。
-
-- zsh でファイルパスが壊れる（スペースや括弧）
-  - パスをクォート（`"/path/with (1).csv"`）するか、適切にエスケープしてください。
+| カテゴリ | 技術 |
+|----------|------|
+| **Frontend** | React 18, TypeScript, Vite |
+| **Backend** | Express.js, Node.js |
+| **AI** | OpenAI API |
+| **Deploy** | Vercel (Serverless + Edge Functions) |
+| **Validation** | Zod |
+| **Storage** | LocalStorage |
 
 ---
 
-### ライセンス
+## 📄 ライセンス
 
-内部利用前提の試作。外部配布時はコンテンツ（質問文・タイプ記述等）の権利表記に留意してください。
+内部利用前提の試作品です。外部配布時は質問文やタイプ記述等のコンテンツの権利表記にご注意ください。
+
+---
+
+<div align="center">
+
+**🎯 3分で始める性格診断 - より深い自己理解へ**
+
+[デモを見る](#) | [バグ報告](https://github.com/your-repo/issues) | [機能要望](https://github.com/your-repo/discussions)
+
+</div>
