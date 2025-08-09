@@ -40,6 +40,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Wait for preview to be ready (warmup)
+        env:
+          URL: ${{ needs.deploy.outputs.preview_url }}
+        run: |
+          echo "Waiting for $URL ..."
+          for i in {1..30}; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            if [ "$code" = "200" ]; then
+              echo "Preview is ready (HTTP 200). Warming up..."
+              curl -sS "$URL" >/dev/null || true
+              sleep 2
+              curl -sS "$URL" >/dev/null || true
+              break
+            fi
+            echo "HTTP $code... retrying"
+            sleep 10
+          done
       - name: Audit URLs using Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
         with:
@@ -47,3 +64,4 @@ jobs:
           budgetPath: ./.lighthouse/budget.json
           uploadArtifacts: true
           temporaryPublicStorage: true
+          runs: 1
