@@ -22,10 +22,13 @@ export class DatabaseService {
     }
   }
 
-  static async completeSession(sessionId: string): Promise<void> {
+  static async completeSession(sessionId: string, completedMs?: number): Promise<void> {
     const { error } = await supabase
       .from('sessions')
-      .update({ completed_at: new Date().toISOString() })
+      .update({
+        completed_at: new Date().toISOString(),
+        ...(typeof completedMs === 'number' ? { completed_ms: completedMs } : {})
+      })
       .eq('id', sessionId)
 
     if (error) throw error
@@ -38,7 +41,8 @@ export class DatabaseService {
     answer: 'A' | 'B',
     axis: string,
     weight: number = 1.0,
-    version: number = 1
+    version: number = 1,
+    latencyMs?: number
   ): Promise<void> {
     const { error } = await supabase
       .from('answers')
@@ -48,7 +52,8 @@ export class DatabaseService {
         answer,
         axis,
         weight,
-        version
+        version,
+        ...(typeof latencyMs === 'number' ? { latency_ms: latencyMs } : {})
       })
 
     if (error) throw error

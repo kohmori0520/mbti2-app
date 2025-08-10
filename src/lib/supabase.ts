@@ -19,18 +19,21 @@ export type Database = {
           user_agent: string | null
           created_at: string
           completed_at: string | null
+          completed_ms: number | null
         }
         Insert: {
           id?: string
           user_agent?: string | null
           created_at?: string
           completed_at?: string | null
+          completed_ms?: number | null
         }
         Update: {
           id?: string
           user_agent?: string | null
           created_at?: string
           completed_at?: string | null
+          completed_ms?: number | null
         }
       }
       answers: {
@@ -43,6 +46,7 @@ export type Database = {
           weight: number
           version: number
           timestamp: string
+          latency_ms: number | null
         }
         Insert: {
           id?: string
@@ -53,6 +57,7 @@ export type Database = {
           weight?: number
           version?: number
           timestamp?: string
+          latency_ms?: number | null
         }
         Update: {
           id?: string
@@ -63,6 +68,7 @@ export type Database = {
           weight?: number
           version?: number
           timestamp?: string
+          latency_ms?: number | null
         }
       }
       results: {

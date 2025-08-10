@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS sessions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_agent TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  completed_at TIMESTAMP WITH TIME ZONE
+  completed_at TIMESTAMP WITH TIME ZONE,
+  completed_ms INTEGER
 );
 
 -- Answers table
@@ -18,7 +19,8 @@ CREATE TABLE IF NOT EXISTS answers (
   axis TEXT NOT NULL,
   weight REAL DEFAULT 1.0,
   version INTEGER DEFAULT 1,
-  timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  latency_ms INTEGER
 );
 
 -- Results table

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import type { Question } from './types'
 import questions from './data/personality_questions.json'
 import QuestionCard from './components/QuestionCard'
@@ -33,8 +33,13 @@ export default function App(){
   const [showCompletionAnimation, setShowCompletionAnimation] = useState(false)
   const [completionAnimationFinished, setCompletionAnimationFinished] = useState(false)
   const done = index >= qs.length
+  const appStartTsRef = useRef<number>(Date.now())
+  const lastAnswerTsRef = useRef<number>(Date.now())
 
   const handlePick = async (key: 'A'|'B') => {
+    const now = Date.now()
+    const latencyMs = now - (lastAnswerTsRef.current || now)
+    lastAnswerTsRef.current = now
     const q = qs[index]
     const next = { ...answers, [q.id]: key }
     setAnswers(next)
@@ -58,7 +63,8 @@ export default function App(){
           key,
           q.axis,
           weight,
-          (q as any).version ?? 1
+          (q as any).version ?? 1,
+          latencyMs
         )
       } catch (error) {
         console.error('Failed to save answer to Supabase:', error)
@@ -104,6 +110,7 @@ export default function App(){
     
     // Supabaseに結果保存
     if (isSupabaseEnabled && sessionId) {
+      const completedMs = Date.now() - appStartTsRef.current
       DatabaseService.saveResult(
         sessionId,
         primaryPersona.code,
@@ -111,7 +118,7 @@ export default function App(){
         conf,
         axes
       ).then(() => {
-        return DatabaseService.completeSession(sessionId)
+        return DatabaseService.completeSession(sessionId, completedMs)
       }).catch(error => {
         console.error('Failed to save result to Supabase:', error)
       })
