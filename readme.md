@@ -21,7 +21,10 @@
 | 🤖 **AI分析** | OpenAI による詳細な性格分析 |
 | ⚡ **高速操作** | キーボード操作対応（1/2キー、矢印キー） |
 | 💾 **自動復元** | 回答の自動保存・復元機能 |
-| 📊 **データ分析** | ログ出力・CSV エクスポート |
+| 📊 **データ分析** | リアルタイム統計・カテゴリ別分析 |
+| 🗄️ **Supabase統合** | クラウドデータベース・分析ダッシュボード |
+| 💕 **相性診断** | タイプ間の相性とチーム構成分析 |
+| 💼 **キャリア支援** | 詳細なキャリアガイダンス・成長アドバイス |
 | 🖼️ **動的OG画像** | 結果に応じた共有用画像を自動生成 |
 | 📱 **レスポンシブ** | PC・スマホ対応 |
 
@@ -29,17 +32,33 @@
 
 ## 🚀 クイックスタート
 
-### 1️⃣ セットアップ
+### 1️⃣ 基本セットアップ
 ```bash
 # 依存関係のインストール
 npm install
 
 # 環境変数の設定
-cp .env.example .env
-# .env に OPENAI_API_KEY を設定
+cp .env.example .env.local
+# .env.local に必要な環境変数を設定
 ```
 
-### 2️⃣ 開発環境の起動
+### 2️⃣ Supabaseの設定（オプション）
+**📊 分析・統計機能を利用する場合:**
+
+1. [Supabase](https://supabase.com) でプロジェクト作成
+2. 環境変数を設定:
+```bash
+# .env.local に追加
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+3. データベーススキーマを作成:
+```bash
+# Supabase SQL Editor で実行
+cat supabase/schema.sql
+```
+
+### 3️⃣ 開発環境の起動
 ```bash
 # フロントエンド（React + Vite）
 npm run dev
@@ -50,8 +69,13 @@ npm run api:dev
 # 🌐 http://localhost:8787/api/analyze で起動
 ```
 
-### 3️⃣ ブラウザでアクセス
+### 4️⃣ ブラウザでアクセス
 🎉 `http://localhost:5173` を開いて診断開始！
+
+**✨ 新機能:**
+- `/analytics` - 分析ダッシュボード
+- `/category-analysis` - カテゴリ別分析
+- 詳細な相性・キャリア情報
 
 ---
 
