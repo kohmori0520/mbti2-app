@@ -322,7 +322,7 @@ export default function EnhancedTypeDetail({ typeCode, details }: Props) {
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .enhanced-type-detail {
           max-width: 1000px;
           margin: 0 auto;

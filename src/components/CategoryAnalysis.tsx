@@ -273,7 +273,7 @@ export default function CategoryAnalysis() {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .category-analysis {
           max-width: 1200px;
           margin: 0 auto;

@@ -8,7 +8,7 @@ export default function Analytics() {
     <div className="app-layout">
       <Header 
         showTitle={true} 
-        variant="analytics"
+        variant="frosted"
       />
       
       <main className="app-main">

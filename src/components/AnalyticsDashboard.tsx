@@ -156,7 +156,7 @@ export default function AnalyticsDashboard() {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .analytics-dashboard {
           max-width: 1200px;
           margin: 0 auto;

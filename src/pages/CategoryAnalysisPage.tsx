@@ -8,7 +8,7 @@ export default function CategoryAnalysisPage() {
     <div className="app-layout">
       <Header 
         showTitle={true} 
-        variant="analysis"
+        variant="frosted"
       />
       
       <main className="app-main">
