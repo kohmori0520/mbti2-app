@@ -128,41 +128,11 @@ export default function App(){
 
   // 初期化とSupabase設定
   useEffect(() => {
-    const initializeApp = async () => {
-      // Supabase設定チェック
-      try {
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-        const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-        
-        if (supabaseUrl && supabaseKey && supabaseUrl !== 'your_supabase_url') {
-          setIsSupabaseEnabled(true)
-          
-          // 新しいセッション作成
-          const newSessionId = await DatabaseService.createSession(navigator.userAgent)
-          setSessionId(newSessionId)
-          
-          // 既存データの移行チェック
-          const needsMigration = await MigrationService.checkMigrationNeeded()
-          if (needsMigration) {
-            try {
-              const result = await MigrationService.migrateLocalStorageToSupabase()
-              console.log('Migration completed:', result)
-            } catch (error) {
-              console.error('Migration failed:', error)
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Failed to initialize Supabase:', error)
-        setIsSupabaseEnabled(false)
-      }
-
-      // LocalStorageから回答復元
-      try {
-        const saved = localStorage.getItem('answers')
-        if (!saved) return
+    // 同期的にLocalStorageから回答復元（即座に画面描画）
+    try {
+      const saved = localStorage.getItem('answers')
+      if (saved) {
         const parsed = JSON.parse(saved) as Record<string, 'A'|'B'>
-        // 文字キーを数値キーに
         const restored: Answers = {}
         for (const [k, v] of Object.entries(parsed)) {
           const id = Number(k)
@@ -177,10 +147,43 @@ export default function App(){
           nextIdx = i + 1
         }
         setIndex(Math.min(nextIdx, qs.length))
-      } catch {}
+      }
+    } catch {}
+
+    // 非同期でSupabase初期化（画面描画をブロックしない）
+    const initializeSupabase = async () => {
+      try {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+        const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+        
+        if (supabaseUrl && supabaseKey && supabaseUrl !== 'your_supabase_url') {
+          // 設定確認のみ先に実行
+          setIsSupabaseEnabled(true)
+          
+          // セッション作成とマイグレーションは遅延実行
+          setTimeout(async () => {
+            try {
+              const newSessionId = await DatabaseService.createSession(navigator.userAgent)
+              setSessionId(newSessionId)
+              
+              // 既存データの移行チェック
+              const needsMigration = await MigrationService.checkMigrationNeeded()
+              if (needsMigration) {
+                const result = await MigrationService.migrateLocalStorageToSupabase()
+                console.log('Migration completed:', result)
+              }
+            } catch (error) {
+              console.error('Supabase initialization failed:', error)
+              setIsSupabaseEnabled(false)
+            }
+          }, 100)
+        }
+      } catch (error) {
+        console.error('Failed to check Supabase config:', error)
+      }
     }
 
-    initializeApp()
+    initializeSupabase()
   }, [])
 
   return (

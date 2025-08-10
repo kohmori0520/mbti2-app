@@ -121,16 +121,29 @@ export default function CategoryAnalysis() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const distribution = await DatabaseService.getTypeDistribution()
+        // タイムアウト設定（5秒）
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Timeout')), 5000)
+        })
+
+        const distribution = await Promise.race([
+          DatabaseService.getTypeDistribution(),
+          timeoutPromise
+        ]) as { type: string; count: number }[]
+
         setTypeDistribution(distribution)
       } catch (error) {
         console.error('Failed to load type distribution:', error)
+        // エラーでも空データで表示を続ける
+        setTypeDistribution([])
       } finally {
         setLoading(false)
       }
     }
 
-    loadData()
+    // 遅延実行（初期描画を優先）
+    const timer = setTimeout(loadData, 300)
+    return () => clearTimeout(timer)
   }, [])
 
   const getCategoryAnalysis = () => {

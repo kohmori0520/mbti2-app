@@ -23,22 +23,38 @@ export default function AnalyticsDashboard() {
     const loadAnalytics = async () => {
       try {
         setLoading(true)
-        const [statsData, distributionData] = await Promise.all([
+        // タイムアウト設定（10秒）
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Timeout')), 10000)
+        })
+
+        const dataPromise = Promise.all([
           DatabaseService.getStats(),
           DatabaseService.getTypeDistribution()
         ])
+
+        const [statsData, distributionData] = await Promise.race([
+          dataPromise,
+          timeoutPromise
+        ]) as [Stats, TypeDistribution[]]
+
         setStats(statsData)
         setTypeDistribution(distributionData)
         setError(null)
       } catch (err) {
-        setError('データの読み込みに失敗しました')
+        const errorMessage = err instanceof Error && err.message === 'Timeout' 
+          ? 'データの読み込みがタイムアウトしました。Supabaseの設定を確認してください。'
+          : 'データの読み込みに失敗しました'
+        setError(errorMessage)
         console.error('Analytics loading error:', err)
       } finally {
         setLoading(false)
       }
     }
 
-    loadAnalytics()
+    // 少し遅延してから実行（初期描画を優先）
+    const timer = setTimeout(loadAnalytics, 500)
+    return () => clearTimeout(timer)
   }, [])
 
   if (loading) {

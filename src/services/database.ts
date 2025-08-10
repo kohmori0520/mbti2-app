@@ -7,14 +7,19 @@ type Result = Database['public']['Tables']['results']['Row']
 export class DatabaseService {
   // セッション管理
   static async createSession(userAgent?: string): Promise<string> {
-    const { data, error } = await supabase
-      .from('sessions')
-      .insert({ user_agent: userAgent })
-      .select('id')
-      .single()
+    try {
+      const { data, error } = await supabase
+        .from('sessions')
+        .insert({ user_agent: userAgent })
+        .select('id')
+        .single()
 
-    if (error) throw error
-    return data.id
+      if (error) throw error
+      return data.id
+    } catch (error) {
+      console.error('Database createSession failed:', error)
+      throw new Error(`Failed to create session: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   static async completeSession(sessionId: string): Promise<void> {
