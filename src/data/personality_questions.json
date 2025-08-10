@@ -670,5 +670,465 @@
         }
       }
     ]
+  },
+  {
+    "id": 31,
+    "axis": "behavior",
+    "question": "旅行先では…",
+    "version": 2,
+    "weight": 1.15,
+    "options": [
+      {
+        "key": "A",
+        "label": "現地の人と積極的に話してみる",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "観光地をじっくり見て回る",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "axis": "relation",
+    "question": "同僚が落ち込んでいるとき…",
+    "version": 2,
+    "weight": 1.35,
+    "options": [
+      {
+        "key": "A",
+        "label": "話を聞いてあげる",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "解決策を考えて提案する",
+        "score": {
+          "relation": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "axis": "decision",
+    "question": "新しいプロジェクトの提案があったら…",
+    "version": 2,
+    "weight": 1.42,
+    "options": [
+      {
+        "key": "A",
+        "label": "面白そうなので参加してみる",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "詳細を確認してから判断する",
+        "score": {
+          "decision": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "axis": "value",
+    "question": "理想の職場環境は…",
+    "version": 2,
+    "weight": 1.18,
+    "options": [
+      {
+        "key": "A",
+        "label": "革新的でダイナミック",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "安定していて予測可能",
+        "score": {
+          "value": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "axis": "behavior",
+    "question": "知らない街を歩いているとき…",
+    "version": 2,
+    "weight": 1.26,
+    "options": [
+      {
+        "key": "A",
+        "label": "気になる店や場所に立ち寄る",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "目的地に向かって効率よく移動する",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "axis": "relation",
+    "question": "チームでの意見の対立があったら…",
+    "version": 2,
+    "weight": 1.38,
+    "options": [
+      {
+        "key": "A",
+        "label": "みんなが納得できる妥協点を探す",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "最も論理的な案を支持する",
+        "score": {
+          "relation": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "axis": "decision",
+    "question": "緊急事態が発生したら…",
+    "version": 2,
+    "weight": 1.44,
+    "options": [
+      {
+        "key": "A",
+        "label": "直感を信じてすぐに行動する",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "状況を整理してから対応する",
+        "score": {
+          "decision": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "axis": "value",
+    "question": "成功の定義は…",
+    "version": 2,
+    "weight": 1.32,
+    "options": [
+      {
+        "key": "A",
+        "label": "新しいことに挑戦し続けること",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "安定した成果を継続すること",
+        "score": {
+          "value": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "axis": "behavior",
+    "question": "パーティーや飲み会では…",
+    "version": 2,
+    "weight": 1.22,
+    "options": [
+      {
+        "key": "A",
+        "label": "いろんな人と話をする",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "親しい人とじっくり話す",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "axis": "relation",
+    "question": "友人にアドバイスを求められたら…",
+    "version": 2,
+    "weight": 1.28,
+    "options": [
+      {
+        "key": "A",
+        "label": "共感して気持ちに寄り添う",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "客観的な分析と解決策を提示する",
+        "score": {
+          "relation": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "axis": "decision",
+    "question": "投資や大きな買い物をするとき…",
+    "version": 2,
+    "weight": 1.37,
+    "options": [
+      {
+        "key": "A",
+        "label": "チャンスと感じたら踏み切る",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "十分に検討してからにする",
+        "score": {
+          "decision": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "axis": "value",
+    "question": "学習や成長において…",
+    "version": 2,
+    "weight": 1.21,
+    "options": [
+      {
+        "key": "A",
+        "label": "新分野に挑戦することを重視する",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "既存スキルを深めることを重視する",
+        "score": {
+          "value": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "axis": "behavior",
+    "question": "新しい趣味を始めるなら…",
+    "version": 2,
+    "weight": 1.19,
+    "options": [
+      {
+        "key": "A",
+        "label": "グループやサークルに参加する",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "一人で黙々と取り組む",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "axis": "relation",
+    "question": "プロジェクトの進行で問題が起きたら…",
+    "version": 2,
+    "weight": 1.41,
+    "options": [
+      {
+        "key": "A",
+        "label": "メンバーの気持ちを考慮して調整する",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "効率を重視して最適解を提示する",
+        "score": {
+          "relation": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "axis": "decision",
+    "question": "転職やキャリアチェンジを考えるとき…",
+    "version": 2,
+    "weight": 1.46,
+    "options": [
+      {
+        "key": "A",
+        "label": "興味のある分野なら飛び込んでみる",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "慎重に計画を立ててから行動する",
+        "score": {
+          "decision": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "axis": "value",
+    "question": "理想的な働き方は…",
+    "version": 2,
+    "weight": 1.24,
+    "options": [
+      {
+        "key": "A",
+        "label": "多様な案件に関わる",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "専門性を深く追求する",
+        "score": {
+          "value": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "axis": "behavior",
+    "question": "休憩時間に…",
+    "version": 2,
+    "weight": 1.16,
+    "options": [
+      {
+        "key": "A",
+        "label": "同僚と雑談を楽しむ",
+        "score": {
+          "behavior": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "一人でリフレッシュする",
+        "score": {
+          "behavior": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "axis": "relation",
+    "question": "チーム内で意見を言うとき…",
+    "version": 2,
+    "weight": 1.33,
+    "options": [
+      {
+        "key": "A",
+        "label": "場の雰囲気を考慮する",
+        "score": {
+          "relation": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "事実に基づいて率直に伝える",
+        "score": {
+          "relation": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "axis": "decision",
+    "question": "新しいテクノロジーやツールが出たら…",
+    "version": 2,
+    "weight": 1.27,
+    "options": [
+      {
+        "key": "A",
+        "label": "すぐに試してみる",
+        "score": {
+          "decision": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "評価が固まってから検討する",
+        "score": {
+          "decision": -1
+        }
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "axis": "value",
+    "question": "人生で大切にしたいのは…",
+    "version": 2,
+    "weight": 1.39,
+    "options": [
+      {
+        "key": "A",
+        "label": "新しい経験と変化",
+        "score": {
+          "value": 1
+        }
+      },
+      {
+        "key": "B",
+        "label": "安定と継続",
+        "score": {
+          "value": -1
+        }
+      }
+    ]
   }
 ]

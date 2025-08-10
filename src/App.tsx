@@ -5,11 +5,14 @@ import QuestionCard from './components/QuestionCard'
 import ProgressBar from './components/ProgressBar'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import CompletionAnimation from './components/CompletionAnimation'
 import { Link } from 'react-router-dom'
 import { makeTypeAvatar } from './utils/avatar'
 import details from './data/persona_details.json'
 import type { PersonaDetailsMap } from './types'
 import { aggregate, normalize, pickPersona, PERSONAS, aggregateWithCounts, normalizeByCounts, confidence } from './logic/scoring'
+import { DatabaseService } from './services/database'
+import { MigrationService } from './utils/migration'
 
 type Answers = Record<number, 'A'|'B'>
 
@@ -25,15 +28,45 @@ export default function App(){
   }))
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState<Answers>({})
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [isSupabaseEnabled, setIsSupabaseEnabled] = useState(false)
+  const [showCompletionAnimation, setShowCompletionAnimation] = useState(false)
+  const [completionAnimationFinished, setCompletionAnimationFinished] = useState(false)
   const done = index >= qs.length
 
-  const handlePick = (key: 'A'|'B') => {
+  const handlePick = async (key: 'A'|'B') => {
     const q = qs[index]
     const next = { ...answers, [q.id]: key }
     setAnswers(next)
-    setIndex(i => i + 1)
+    const newIndex = index + 1
+    setIndex(newIndex)
+    
+    // 最後の質問の場合、完了アニメーションを表示
+    if (newIndex >= qs.length) {
+      setTimeout(() => {
+        setShowCompletionAnimation(true)
+      }, 300)
+    }
+    
+    // Supabaseに保存（有効な場合）
+    if (isSupabaseEnabled && sessionId) {
+      try {
+        const weight = (q.options.find(o=>o.key===key) as any)?.weight ?? 1
+        await DatabaseService.saveAnswer(
+          sessionId,
+          q.id,
+          key,
+          q.axis,
+          weight,
+          (q as any).version ?? 1
+        )
+      } catch (error) {
+        console.error('Failed to save answer to Supabase:', error)
+      }
+    }
+    
+    // LocalStorageにも保存（フォールバック）
     localStorage.setItem('answers', JSON.stringify(next))
-    // ログ保存（簡易）
     try {
       const logs = JSON.parse(localStorage.getItem('answerLogs') || '[]') as any[]
       logs.push({ ts: Date.now(), id: q.id, axis: q.axis, version: (q as any).version ?? 1, weight: (q as any).weight ?? ((q.options.find(o=>o.key===key) as any)?.weight ?? 1), pick: key })
@@ -68,6 +101,22 @@ export default function App(){
     const primaryPersona = PERSONAS.find(p => p.code === primary.code)!
     const secondaryPersona = PERSONAS.find(p => p.code === secondary.code)!
     const conf = confidence(primary.score, secondary.score, answered, total)
+    
+    // Supabaseに結果保存
+    if (isSupabaseEnabled && sessionId) {
+      DatabaseService.saveResult(
+        sessionId,
+        primaryPersona.code,
+        secondaryPersona.code,
+        conf,
+        axes
+      ).then(() => {
+        return DatabaseService.completeSession(sessionId)
+      }).catch(error => {
+        console.error('Failed to save result to Supabase:', error)
+      })
+    }
+    
     // 結果ログ（簡易）
     try {
       const resultLogs = JSON.parse(localStorage.getItem('resultLogs') || '[]') as any[]
@@ -75,32 +124,66 @@ export default function App(){
       localStorage.setItem('resultLogs', JSON.stringify(resultLogs))
     } catch {}
     return { primaryPersona, secondaryPersona, axes, conf }
-  }, [done])
+  }, [done, isSupabaseEnabled, sessionId])
 
-  // 回答の自動復元（初回のみ）
+  // 初期化とSupabase設定
   useEffect(() => {
+    // 同期的にLocalStorageから回答復元（即座に画面描画）
     try {
       const saved = localStorage.getItem('answers')
-      if (!saved) return
-      const parsed = JSON.parse(saved) as Record<string, 'A'|'B'>
-      // 文字キーを数値キーに
-      const restored: Answers = {}
-      for (const [k, v] of Object.entries(parsed)) {
-        const id = Number(k)
-        if (Number.isFinite(id) && (v === 'A' || v === 'B')) restored[id] = v
+      if (saved) {
+        const parsed = JSON.parse(saved) as Record<string, 'A'|'B'>
+        const restored: Answers = {}
+        for (const [k, v] of Object.entries(parsed)) {
+          const id = Number(k)
+          if (Number.isFinite(id) && (v === 'A' || v === 'B')) restored[id] = v
+        }
+        setAnswers(restored)
+        // 次の未回答インデックスへ
+        const answeredIds = new Set(Object.keys(restored).map(n => Number(n)))
+        let nextIdx = 0
+        for (let i = 0; i < qs.length; i++) {
+          if (!answeredIds.has(qs[i].id)) { nextIdx = i; break }
+          nextIdx = i + 1
+        }
+        setIndex(Math.min(nextIdx, qs.length))
       }
-      setAnswers(restored)
-      // 次の未回答インデックスへ
-      const answeredIds = new Set(Object.keys(restored).map(n => Number(n)))
-      let nextIdx = 0
-      for (let i = 0; i < qs.length; i++) {
-        if (!answeredIds.has(qs[i].id)) { nextIdx = i; break }
-        nextIdx = i + 1
-      }
-      setIndex(Math.min(nextIdx, qs.length))
     } catch {}
-  // qsは固定のため初回のみ
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // 非同期でSupabase初期化（画面描画をブロックしない）
+    const initializeSupabase = async () => {
+      try {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+        const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+        
+        if (supabaseUrl && supabaseKey && supabaseUrl !== 'your_supabase_url') {
+          // 設定確認のみ先に実行
+          setIsSupabaseEnabled(true)
+          
+          // セッション作成とマイグレーションは遅延実行
+          setTimeout(async () => {
+            try {
+              const newSessionId = await DatabaseService.createSession(navigator.userAgent)
+              setSessionId(newSessionId)
+              
+              // 既存データの移行チェック
+              const needsMigration = await MigrationService.checkMigrationNeeded()
+              if (needsMigration) {
+                const result = await MigrationService.migrateLocalStorageToSupabase()
+                console.log('Migration completed:', result)
+              }
+            } catch (error) {
+              console.error('Supabase initialization failed:', error)
+              setIsSupabaseEnabled(false)
+            }
+          }, 100)
+        }
+      } catch (error) {
+        console.error('Failed to check Supabase config:', error)
+      }
+    }
+
+    initializeSupabase()
   }, [])
 
   return (
@@ -128,7 +211,13 @@ export default function App(){
               </div>
               
               <div className="question-section">
-                <ProgressBar progress={progress} />
+                <ProgressBar 
+                  progress={progress}
+                  totalQuestions={qs.length}
+                  currentQuestion={index + 1}
+                  animated={true}
+                  showPercentage={true}
+                />
                 <div style={{height: 24}} />
                 <QuestionCard 
                   q={qs[index]} 
@@ -153,7 +242,7 @@ export default function App(){
                 </div>
               </div>
             </>
-          ) : (
+          ) : completionAnimationFinished ? (
             <>
               <div className="result-section">
                 <ResultView 
@@ -210,14 +299,25 @@ export default function App(){
                 </div>
               </div>
             </>
-          )}
+          ) : null}
         </div>
       </main>
       
       <Footer 
-        showDetails={done}
-        variant={done ? 'result' : 'default'}
+        showDetails={done && completionAnimationFinished}
+        variant={done && completionAnimationFinished ? 'result' : 'default'}
       />
+      
+      {/* 完了アニメーション */}
+      {showCompletionAnimation && !completionAnimationFinished && (
+        <CompletionAnimation
+          totalQuestions={qs.length}
+          onComplete={() => {
+            setCompletionAnimationFinished(true)
+            setShowCompletionAnimation(false)
+          }}
+        />
+      )}
     </div>
   )
 }
