@@ -162,4 +162,77 @@ export class DatabaseService {
       mostCommonType
     }
   }
+
+  // ========= Analytics =========
+  static async fetchTypeDistribution(): Promise<{ type: string; cnt: number }[]> {
+    const { data, error } = await supabase.from('v_type_distribution').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchTypeDistribution30d(): Promise<{ type: string; cnt: number }[]> {
+    const { data, error } = await supabase.from('v_type_distribution_30d').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchTypeDistribution7d(): Promise<{ type: string; cnt: number }[]> {
+    const { data, error } = await supabase.from('v_type_distribution_7d').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchTypeDistribution90d(): Promise<{ type: string; cnt: number }[]> {
+    const { data, error } = await supabase.from('v_type_distribution_90d').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchDailyCompleted(): Promise<{ day: string; completed: number }[]> {
+    const { data, error } = await supabase.from('v_daily_completed').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchCompletionTimeStats(): Promise<{ p50_ms: number; p90_ms: number }[]> {
+    const { data, error } = await supabase.from('v_completion_time_stats').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchAxisAbRatio(): Promise<{ axis: string; a_cnt: number; b_cnt: number; a_ratio: number }[]> {
+    const { data, error } = await supabase.from('v_axis_ab_ratio').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchLatencyHist(): Promise<{ bucket: number; cnt: number }[]> {
+    const { data, error } = await supabase.from('v_latency_hist').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchTypeDistributionByReferrer30d(): Promise<{ referrer: string | null; type: string; cnt: number }[]> {
+    const { data, error } = await supabase.from('v_type_distribution_by_referrer_30d').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchTypeDistributionByUtm30d(): Promise<{ utm_source: string; type: string; cnt: number }[]> {
+    const { data, error } = await supabase.from('v_type_distribution_by_utm_30d').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchQuestionAbSkewTop5(): Promise<{ question_id: number; a_cnt: number; b_cnt: number; skew: number }[]> {
+    const { data, error } = await supabase.from('v_question_ab_skew_top5_30d').select('*')
+    if (error) throw error
+    return data || []
+  }
+
+  static async fetchQuestionLatencyTop5(): Promise<{ question_id: number; avg_latency_ms: number; samples: number }[]> {
+    const { data, error } = await supabase.from('v_question_latency_top5_30d').select('*')
+    if (error) throw error
+    return data || []
+  }
 }

@@ -4,6 +4,7 @@ import type { PersonaDetailsMap, AiInsight } from '../types'
 import details from '../data/persona_details.json'
 import { Link } from 'react-router-dom'
 import { makeTypeAvatar } from '../utils/avatar'
+import DetailedInsights from './DetailedInsights'
 
 export default function ResultView({ persona, axes, secondary, conf } : { persona: Persona, axes: Axes, secondary?: Persona, conf?: number }) {
   const map = details as unknown as PersonaDetailsMap
@@ -143,6 +144,10 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
         <span style={{display:'inline-block', width:8}} />
         <Link className="btn outline" to="/types">タイプ辞典へ</Link>
       </div>
+
+      {/* 詳細解説セクション */}
+      <hr />
+      <DetailedInsights typeCode={persona.code} />
       <div style={{display:'flex', gap:8, marginTop: 16}}>
         <a className="btn outline" href="#" onClick={(e)=>{e.preventDefault();
           try {

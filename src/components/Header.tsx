@@ -14,6 +14,7 @@ function NavItems() {
   const location = useLocation()
   const isHome = location.pathname === '/'
   const isTypes = location.pathname.startsWith('/types')
+  const hasProgress = typeof window !== 'undefined' && !!localStorage.getItem('answers')
 
   return (
     <>
@@ -31,6 +32,25 @@ function NavItems() {
         </svg>
         <span className="nav-text">図鑑</span>
       </Link>
+      {/* 結果へ */}
+      {hasProgress && (
+        <Link to="/?show=result" className="nav-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M8 3v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          <span className="nav-text">結果</span>
+        </Link>
+      )}
+      {/* 再診断 */}
+      {hasProgress && (
+        <Link to="/?restart=1" className="nav-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3.5 8a4.5 4.5 0 1 1 1.32 3.182" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M3.5 8V5.5H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          <span className="nav-text">再診断</span>
+        </Link>
+      )}
     </>
   )
 }

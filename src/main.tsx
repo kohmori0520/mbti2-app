@@ -2,8 +2,9 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import TypesIndex from './pages/TypesIndex'
-import TypeDetail from './pages/TypeDetail'
+import { Suspense, lazy } from 'react'
+const TypesIndex = lazy(() => import('./pages/TypesIndex'))
+const TypeDetail = lazy(() => import('./pages/TypeDetail'))
 import './styles.css'
 import { z } from 'zod'
 import q from './data/personality_questions.json'
@@ -38,10 +39,12 @@ if (import.meta.env.DEV) {
 const root = createRoot(document.getElementById('root')!)
 root.render(
   <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/types" element={<TypesIndex />} />
-      <Route path="/types/:code" element={<TypeDetail />} />
-    </Routes>
+    <Suspense fallback={<div className="container">Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/types" element={<TypesIndex />} />
+        <Route path="/types/:code" element={<TypeDetail />} />
+      </Routes>
+    </Suspense>
   </BrowserRouter>
 )
