@@ -32,6 +32,13 @@ function NavItems() {
         </svg>
         <span className="nav-text">図鑑</span>
       </Link>
+      <Link to="/analytics" className={`nav-link ${location.pathname === '/analytics' ? 'active' : ''}`}>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 13V8l4-4 2 2 4-4v11H3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M3 8l4-4 2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span className="nav-text">分析</span>
+      </Link>
       {/* 結果へ */}
       {hasProgress && (
         <Link to="/?show=result" className="nav-link">

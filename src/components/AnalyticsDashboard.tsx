@@ -170,7 +170,7 @@ export default function AnalyticsDashboard() {
       <div className="dashboard-header">
         <h1 className="text-title-1">分析ダッシュボード</h1>
         <p className="dashboard-description">
-          MBTIアプリの利用統計と分析データです
+          PersonalType診断アプリの利用統計と分析データです
         </p>
       </div>
 
@@ -195,6 +195,8 @@ export default function AnalyticsDashboard() {
       </div>
 
       {/* タイプ分布 */}
+      {/* 可視化エリア（デスクトップでは2カラム） */}
+      <div className="dashboard-grid">
       <div className="chart-section">
         <div className="card">
           <div className="section-header">
@@ -442,12 +444,25 @@ export default function AnalyticsDashboard() {
           </div>
         </div>
       </div>
+      </div>{/* /.dashboard-grid */}
 
       <style>{`
         .analytics-dashboard {
           max-width: 1200px;
           margin: 0 auto;
           padding: 2rem;
+        }
+
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        @media (min-width: 960px) {
+          .dashboard-grid {
+            grid-template-columns: 1fr 1fr;
+          }
         }
 
         .dashboard-header {
