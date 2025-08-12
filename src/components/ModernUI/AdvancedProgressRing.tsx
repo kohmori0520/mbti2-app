@@ -110,7 +110,7 @@ export default function AdvancedProgressRing({
         </div>
       )}
       
-      <style jsx>{`
+      <style>{`
         .progress-ring-container {
           position: relative;
           display: inline-block;

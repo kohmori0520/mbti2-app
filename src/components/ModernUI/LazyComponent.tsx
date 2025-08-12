@@ -45,7 +45,7 @@ class LazyErrorBoundary extends React.Component<
             </button>
           </div>
           
-          <style jsx>{`
+          <style>{`
             .lazy-error-fallback {
               display: flex;
               align-items: center;
@@ -84,7 +84,7 @@ const DefaultLoadingComponent = () => (
     </div>
     <p className="loading-text">読み込み中...</p>
     
-    <style jsx>{`
+    <style>{`
       .lazy-loading {
         display: flex;
         flex-direction: column;
@@ -138,7 +138,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
   const { delay = 0, retries = 3, timeout = 10000 } = options
 
   return lazy(async () => {
-    let lastError: Error
+    let lastError: Error | undefined
 
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
@@ -167,7 +167,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
       }
     }
 
-    throw lastError
+    throw lastError || new Error('Component failed to load after all retries')
   })
 }
 
@@ -245,7 +245,7 @@ export function LazyLoadOnVisible({
         isVisible && fallback
       )}
       
-      <style jsx>{`
+      <style>{`
         .lazy-load-container {
           min-height: 100px;
         }

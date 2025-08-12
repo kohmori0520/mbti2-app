@@ -184,7 +184,7 @@ export default function QuestionCard({ q, onPick, onBack, onSkip, canBack = fals
         </div>
       </GlassCard>
       
-      <style jsx>{`
+      <style>{`
         .question-card-container {
           animation: questionSlideIn 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
         }

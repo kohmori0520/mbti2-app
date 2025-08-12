@@ -132,7 +132,7 @@ export default function SmartTooltip({
         </div>
       )}
       
-      <style jsx>{`
+      <style>{`
         .smart-tooltip-trigger {
           position: relative;
           display: inline-block;

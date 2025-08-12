@@ -10,7 +10,14 @@
       "Bash(supabase start:*)",
       "Bash(psql:*)",
       "Bash(npm run dev:*)",
-      "Bash(supabase status:*)"
+      "Bash(supabase status:*)",
+      "Bash(supabase status:*)",
+      "Bash(npm run supabase:status:*)",
+      "Bash(node:*)",
+      "Bash(NODE_ENV=production node test-db-config.mjs)",
+      "Bash(npm run build:*)",
+      "Bash(npm run seed:dummy:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

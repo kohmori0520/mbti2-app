@@ -104,7 +104,7 @@ export default function EnhancedNavigation({
         })}
       </div>
       
-      <style jsx>{`
+      <style>{`
         .enhanced-navigation {
           background: var(--color-surface);
           border-radius: 12px;

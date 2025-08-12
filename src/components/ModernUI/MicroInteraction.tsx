@@ -107,7 +107,7 @@ export default function MicroInteraction({
     >
       {children}
       
-      <style jsx>{`
+      <style>{`
         .micro-interaction {
           display: inline-block;
           transition: 

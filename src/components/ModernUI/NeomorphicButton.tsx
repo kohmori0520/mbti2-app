@@ -54,7 +54,7 @@ export default function NeomorphicButton({
         {children}
       </span>
       
-      <style jsx>{`
+      <style>{`
         .neomorphic-button {
           position: relative;
           border: none;

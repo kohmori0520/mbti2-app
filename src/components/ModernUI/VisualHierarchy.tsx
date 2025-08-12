@@ -29,7 +29,7 @@ export default function VisualHierarchy({
     <div className={`visual-hierarchy ${levelClass} ${emphasisClass} ${sizeClass} ${contrastClass} ${spacingClass} ${className}`}>
       {children}
       
-      <style jsx>{`
+      <style>{`
         .visual-hierarchy {
           transition: all 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
         }

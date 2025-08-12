@@ -52,7 +52,7 @@ export default function AccessibleCard({
     <Component {...componentProps}>
       {children}
       
-      <style jsx>{`
+      <style>{`
         .accessible-card {
           position: relative;
           border-radius: 12px;

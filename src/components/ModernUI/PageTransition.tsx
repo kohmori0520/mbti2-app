@@ -94,7 +94,7 @@ export default function PageTransition({
     >
       {children}
       
-      <style jsx>{`
+      <style>{`
         .page-transition {
           will-change: transform, opacity;
         }

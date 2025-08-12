@@ -29,7 +29,7 @@ export default function AnimatedBackground({
 
   const renderGradient = () => (
     <div className={`animated-gradient ${className}`}>
-      <style jsx>{`
+      <style>{`
         .animated-gradient {
           position: absolute;
           top: 0;
@@ -73,7 +73,7 @@ export default function AnimatedBackground({
         />
       ))}
       
-      <style jsx>{`
+      <style>{`
         .animated-particles {
           position: absolute;
           top: 0;
@@ -133,7 +133,7 @@ export default function AnimatedBackground({
         />
       </svg>
       
-      <style jsx>{`
+      <style>{`
         .animated-waves {
           position: absolute;
           bottom: 0;
@@ -195,7 +195,7 @@ export default function AnimatedBackground({
         />
       ))}
       
-      <style jsx>{`
+      <style>{`
         .animated-geometric {
           position: absolute;
           top: 0;
@@ -238,7 +238,7 @@ export default function AnimatedBackground({
       <div className="aurora-layer aurora-2" />
       <div className="aurora-layer aurora-3" />
       
-      <style jsx>{`
+      <style>{`
         .animated-aurora {
           position: absolute;
           top: 0;
@@ -312,7 +312,7 @@ export default function AnimatedBackground({
     <div className="animated-background-container">
       {variants[variant]()}
       
-      <style jsx>{`
+      <style>{`
         .animated-background-container {
           position: absolute;
           top: 0;

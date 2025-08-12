@@ -75,7 +75,7 @@ export function SwipeGesture({
     >
       {children}
       
-      <style jsx>{`
+      <style>{`
         .swipe-gesture {
           touch-action: pan-y;
           -webkit-user-select: none;
@@ -174,7 +174,7 @@ export function PullToRefresh({
         {children}
       </div>
       
-      <style jsx>{`
+      <style>{`
         .pull-to-refresh {
           overflow-y: auto;
           position: relative;
@@ -264,7 +264,7 @@ export function MobileButton({
     >
       {children}
       
-      <style jsx>{`
+      <style>{`
         .mobile-button {
           border: none;
           border-radius: 12px;

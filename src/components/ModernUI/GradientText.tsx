@@ -50,7 +50,7 @@ export default function GradientText({
     >
       {children}
       
-      <style jsx>{`
+      <style>{`
         .gradient-text {
           background: var(--gradient);
           -webkit-background-clip: text;

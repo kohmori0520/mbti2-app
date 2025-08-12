@@ -150,7 +150,7 @@ function FeedbackItem({ message, onDismiss, isExiting }: FeedbackItemProps) {
         </div>
       )}
       
-      <style jsx>{`
+      <style>{`
         .feedback-item {
           background: var(--color-surface);
           border-radius: 12px;
@@ -401,7 +401,7 @@ export default function LiveFeedback({
         />
       ))}
       
-      <style jsx>{`
+      <style>{`
         .live-feedback {
           position: fixed;
           z-index: 1000;

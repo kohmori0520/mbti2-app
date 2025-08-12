@@ -54,7 +54,7 @@ export default function GlassCard({
         {children}
       </div>
       
-      <style jsx>{`
+      <style>{`
         .glass-card {
           position: relative;
           background: rgba(255, 255, 255, var(--glass-opacity));

@@ -103,7 +103,7 @@ export default function ProgressBar({
         </div>
       </div>
       
-      <style jsx>{`
+      <style>{`
         .progress-container-modern {
           margin-bottom: 16px;
         }

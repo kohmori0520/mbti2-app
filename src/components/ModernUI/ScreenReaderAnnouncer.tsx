@@ -36,7 +36,7 @@ export default function ScreenReaderAnnouncer({
       aria-atomic="true"
       className="screen-reader-announcer"
     >
-      <style jsx>{`
+      <style>{`
         .screen-reader-announcer {
           position: absolute;
           width: 1px;

@@ -58,7 +58,7 @@ export function ProgressiveDisclosure({
         </div>
       </div>
       
-      <style jsx>{`
+      <style>{`
         .progressive-disclosure {
           border: 1px solid var(--color-border);
           border-radius: 12px;
@@ -213,7 +213,7 @@ export function InformationChunk({
         </div>
       )}
       
-      <style jsx>{`
+      <style>{`
         .information-chunk {
           border-radius: 12px;
           margin-bottom: 1rem;
@@ -365,7 +365,7 @@ export function ContextualHelp({
         </div>
       )}
       
-      <style jsx>{`
+      <style>{`
         .contextual-help {
           position: relative;
           display: inline-block;
@@ -552,7 +552,7 @@ export function FocusGuide({
         </div>
       )}
       
-      <style jsx>{`
+      <style>{`
         .focus-guide {
           border: 2px solid var(--color-accent);
           border-radius: 16px;
