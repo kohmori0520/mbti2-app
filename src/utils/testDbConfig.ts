@@ -61,4 +61,3 @@ export async function runDatabaseConfigTest(): Promise<void> {
 }
 
 // Export for use in other modules
-export { runDatabaseConfigTest }
