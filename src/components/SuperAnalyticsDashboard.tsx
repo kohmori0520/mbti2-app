@@ -194,9 +194,9 @@ export default function SuperAnalyticsDashboard() {
               </MicroInteraction>
               
               <GradientText 
-                size="xxxl"
+                size="xxl"
                 weight="bold"
-                gradient="rainbow"
+                gradient="primary"
                 animate={true}
                 className="super-title"
               >
@@ -421,7 +421,7 @@ export default function SuperAnalyticsDashboard() {
         </div>
       </main>
       
-      <Footer variant="analytics" />
+      <Footer variant="result" />
 
       <style>{`
         .super-analytics {

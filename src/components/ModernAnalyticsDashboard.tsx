@@ -434,7 +434,7 @@ export default function ModernAnalyticsDashboard() {
         </div>
       </main>
       
-      <Footer variant="analytics" />
+      <Footer variant="result" />
 
       <style>{`
         .analytics-container {
