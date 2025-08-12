@@ -13,6 +13,7 @@ import type { PersonaDetailsMap } from './types'
 import { aggregate, normalize, pickPersona, PERSONAS, aggregateWithCounts, normalizeByCounts, confidence } from './logic/scoring'
 import { DatabaseService } from './services/database'
 import { MigrationService } from './utils/migration'
+import { AnimatedBackground, GradientText, MicroInteraction, SmartTooltip } from './components/ModernUI'
 
 type Answers = Record<number, 'A'|'B'>
 
@@ -231,30 +232,65 @@ export default function App(){
           {!done ? (
             <>
               <div className="intro-section">
+                <AnimatedBackground 
+                  variant="aurora"
+                  intensity="subtle"
+                  speed="slow"
+                  colors={['#667eea', '#764ba2', '#f093fb']}
+                />
                 <div className="hero-content">
-                  <div className="hero-badge">
-                    <span className="badge-text">AI搭載</span>
-                    <div className="badge-icon">✨</div>
-                  </div>
-                  <h1 className="hero-title">次世代タイプ診断</h1>
+                  <MicroInteraction type="hover" effect="bounce" intensity="subtle">
+                    <div className="hero-badge">
+                      <span className="badge-text">AI搭載</span>
+                      <div className="badge-icon">✨</div>
+                    </div>
+                  </MicroInteraction>
+                  
+                  <GradientText 
+                    size="xxl"
+                    weight="bold"
+                    gradient="primary"
+                    animate={true}
+                    className="hero-title-modern"
+                  >
+                    次世代タイプ診断
+                  </GradientText>
+                  
                   <p className="hero-subtitle">
                     科学的アプローチで、あなたの本当の性格を解き明かす
                   </p>
+                  
                   <div className="hero-stats">
-                    <div className="stat-item">
-                      <div className="stat-number">{qs.length}</div>
-                      <div className="stat-label">質問</div>
-                    </div>
+                    <SmartTooltip content="全質問数" theme="glass" position="top">
+                      <MicroInteraction type="hover" effect="pulse" intensity="subtle">
+                        <div className="stat-item">
+                          <div className="stat-number">{qs.length}</div>
+                          <div className="stat-label">質問</div>
+                        </div>
+                      </MicroInteraction>
+                    </SmartTooltip>
+                    
                     <div className="stat-divider"></div>
-                    <div className="stat-item">
-                      <div className="stat-number">3-5</div>
-                      <div className="stat-label">分で完了</div>
-                    </div>
+                    
+                    <SmartTooltip content="予想所要時闓" theme="glass" position="top">
+                      <MicroInteraction type="hover" effect="pulse" intensity="subtle">
+                        <div className="stat-item">
+                          <div className="stat-number">3-5</div>
+                          <div className="stat-label">分で完了</div>
+                        </div>
+                      </MicroInteraction>
+                    </SmartTooltip>
+                    
                     <div className="stat-divider"></div>
-                    <div className="stat-item">
-                      <div className="stat-number">16</div>
-                      <div className="stat-label">タイプ</div>
-                    </div>
+                    
+                    <SmartTooltip content="分類できるタイプ数" theme="glass" position="top">
+                      <MicroInteraction type="hover" effect="pulse" intensity="subtle">
+                        <div className="stat-item">
+                          <div className="stat-number">16</div>
+                          <div className="stat-label">タイプ</div>
+                        </div>
+                      </MicroInteraction>
+                    </SmartTooltip>
                   </div>
                 </div>
               </div>
@@ -317,31 +353,39 @@ export default function App(){
                       const avatar = detail ? makeTypeAvatar(p.code, detail.color) : null
                       
                       return (
-                        <Link 
-                          key={p.code} 
-                          to={`/types/${p.code}`} 
-                          className="type-card"
-                          style={detail?.color ? ({ ['--type-accent' as any]: detail.color } as React.CSSProperties) : undefined}
+                        <MicroInteraction 
+                          key={p.code}
+                          type="hover" 
+                          effect="lift" 
+                          intensity="normal"
                         >
-                          {avatar && (
-                            <div className="type-card-avatar">
-                              <img src={avatar} alt={p.name} />
+                          <Link 
+                            to={`/types/${p.code}`} 
+                            className="type-card modern-enhanced"
+                            style={detail?.color ? ({ ['--type-accent' as any]: detail.color } as React.CSSProperties) : undefined}
+                          >
+                            {avatar && (
+                              <div className="type-card-avatar">
+                                <img src={avatar} alt={p.name} />
+                              </div>
+                            )}
+                            <div className="type-card-content">
+                              <div className="type-card-code">{p.code}</div>
+                              <div className="type-card-name">{p.name}</div>
+                              <div className="type-card-summary small">{detail?.oneLiner || p.summary}</div>
+                              <div className="type-card-keywords">
+                                {detail?.keywords?.slice(0, 3).map((keyword, i) => (
+                                  <span key={i} className="type-card-tag modern">{keyword}</span>
+                                ))}
+                              </div>
                             </div>
-                          )}
-                          <div className="type-card-content">
-                            <div className="type-card-code">{p.code}</div>
-                            <div className="type-card-name">{p.name}</div>
-                            <div className="type-card-summary small">{detail?.oneLiner || p.summary}</div>
-                            {detail?.keywords?.slice(0, 3).map((keyword, i) => (
-                              <span key={i} className="type-card-tag">{keyword}</span>
-                            ))}
-                          </div>
-                          <div className="type-card-arrow">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                              <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </div>
-                        </Link>
+                            <div className="type-card-arrow">
+                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </div>
+                          </Link>
+                        </MicroInteraction>
                       )
                     })}
                   </div>
@@ -369,6 +413,122 @@ export default function App(){
       )}
     </div>
   )
+}
+
+// Add enhanced styles for modern components
+const modernStyles = `
+  .intro-section {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .hero-title-modern {
+    margin: 16px 0;
+    text-align: center;
+  }
+  
+  .hero-badge {
+    position: relative;
+    z-index: 3;
+  }
+  
+  .hero-stats {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .stat-item {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .type-card.modern-enhanced {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  
+  .type-card.modern-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .type-card.modern-enhanced:hover::before {
+    opacity: 1;
+  }
+  
+  .type-card-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  
+  .type-card-tag.modern {
+    background: rgba(var(--type-accent, 0, 122, 255), 0.1);
+    border: 1px solid rgba(var(--type-accent, 0, 122, 255), 0.2);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--type-accent, var(--color-accent));
+    transition: all 0.2s ease;
+  }
+  
+  .type-card.modern-enhanced:hover .type-card-tag.modern {
+    background: rgba(var(--type-accent, 0, 122, 255), 0.2);
+    transform: translateY(-1px);
+  }
+  
+  @media (max-width: 768px) {
+    .hero-stats {
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .stat-divider {
+      width: 80%;
+      height: 1px;
+      background: var(--color-border);
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .type-card.modern-enhanced {
+      transition: none;
+    }
+    
+    .type-card-tag.modern {
+      transition: none;
+    }
+    
+    .stat-item {
+      transition: none;
+    }
+  }
+`
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleElement = document.createElement('style')
+  styleElement.textContent = modernStyles
+  document.head.appendChild(styleElement)
 }
 
 import ResultView from './components/ResultView'
