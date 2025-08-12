@@ -60,7 +60,7 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
         </div>
       ) : null}
 
-      <div style={{display:'grid', gridTemplateColumns:'1.5fr 1fr', gap:16}}>
+      <div className="result-grid">
         <div>
           <div className="text-headline accent">プロフィール</div>
           <p className="text-body" style={{marginTop: 0}}>{detail?.summaryLong ?? persona.summary}</p>
@@ -71,7 +71,7 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
             </div>
           )}
           <div className="text-headline accent" style={{marginTop: 8}}>スコア概要</div>
-          <div style={{display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, marginTop: 8}}>
+          <div className="axes-grid" style={{marginTop: 8}}>
             <AxisBar name="行動" value={axes.behavior} accent={accent} />
             <AxisBar name="意思" value={axes.decision} accent={accent} />
             <AxisBar name="対人" value={axes.relation} accent={accent} />
@@ -123,7 +123,7 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
           <div className="text-body" style={{marginTop: 8}}>
             <div style={{marginBottom:8, color:'var(--color-text-secondary)'}}>{ai.oneLiner}</div>
             <p style={{marginTop:0}}>{ai.summaryLong}</p>
-            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16}}>
+            <div className="ai-grid">
               <div>
                 <div className="text-headline">AI推定: 強み</div>
                 <ul className="small" style={{marginTop:0}}>{ai.strengths.map((s,i)=>(<li key={i}>{s}</li>))}</ul>
@@ -139,16 +139,15 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
 
       <hr />
       <p className="small">※ プロトタイプの推定です。精度は今後の学習で改善されます。</p>
-      <div style={{marginTop:8}}>
+      <div className="result-actions" style={{marginTop:8}}>
         <Link className="btn outline" to={`/types/${persona.code}`}>このタイプの詳細を見る</Link>
-        <span style={{display:'inline-block', width:8}} />
         <Link className="btn outline" to="/types">タイプ辞典へ</Link>
       </div>
 
       {/* 詳細解説セクション */}
       <hr />
       <DetailedInsights typeCode={persona.code} />
-      <div style={{display:'flex', gap:8, marginTop: 16}}>
+      <div className="result-actions" style={{marginTop: 16}}>
         <a className="btn outline" href="#" onClick={(e)=>{e.preventDefault();
           try {
             localStorage.removeItem('answers')
@@ -158,7 +157,7 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
           } catch {}
           location.href = location.origin
         }}>もう一度</a>
-        <a className="btn" href="#" onClick={(e)=>{e.preventDefault();
+        <a className="btn primary" href="#" onClick={(e)=>{e.preventDefault();
           const text = `私は${detail?.title ?? persona.name}でした！\n${location.href}`
           if (navigator.share) { navigator.share({ title: '診断結果', text }).catch(()=>{}) }
           else { navigator.clipboard?.writeText(text).catch(()=>{}); alert('結果をコピーしました') }
@@ -181,6 +180,19 @@ export default function ResultView({ persona, axes, secondary, conf } : { person
           } catch {}
         }}>ログをCSVで保存</a>
       </div>
+      <style>{`
+        .result-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; }
+        .axes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .result-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        @media (max-width: 640px) {
+          .result-grid { grid-template-columns: 1fr; }
+          .axes-grid { grid-template-columns: 1fr 1fr; }
+          .ai-grid { grid-template-columns: 1fr; }
+          .result-actions { flex-direction: column; }
+          .result-actions .btn { width: 100%; text-align: center; }
+        }
+      `}</style>
     </div>
   )
 }
