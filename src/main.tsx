@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
 const TypesIndex = lazy(() => import('./pages/TypesIndex'))
 const TypeDetail = lazy(() => import('./pages/TypeDetail'))
+const Analytics = lazy(() => import('./pages/Analytics'))
 import './styles.css'
 import { z } from 'zod'
 import q from './data/personality_questions.json'
@@ -44,6 +45,7 @@ root.render(
         <Route path="/" element={<App />} />
         <Route path="/types" element={<TypesIndex />} />
         <Route path="/types/:code" element={<TypeDetail />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
     </Suspense>
   </BrowserRouter>

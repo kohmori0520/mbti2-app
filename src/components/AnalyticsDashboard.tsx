@@ -109,6 +109,40 @@ export default function AnalyticsDashboard() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Derived distributions by selected period - MUST be before early returns
+  const periodDistribution: TypeDistribution[] = useMemo(() => {
+    if (period === '7d') return typeDistribution7d
+    if (period === '90d') return typeDistribution90d
+    return typeDistribution30d
+  }, [period, typeDistribution7d, typeDistribution30d, typeDistribution90d])
+
+  // Source options and filtered distribution (30d basis) - MUST be before early returns
+  const referrerOptions = useMemo(() => {
+    const s = new Set((srcReferrer || []).map(r => r.referrer || '(none)'))
+    return Array.from(s)
+  }, [srcReferrer])
+  
+  const utmOptions = useMemo(() => {
+    const s = new Set((srcUtm || []).map(r => r.utm_source || '(none)'))
+    return Array.from(s)
+  }, [srcUtm])
+  
+  const sourceDistribution = useMemo(() => {
+    if (sourceKind === 'referrer') {
+      const key = sourceValue || referrerOptions[0]
+      const rows = (srcReferrer || []).filter(r => (r.referrer || '(none)') === key)
+      return rows.map(r => ({ type: r.type, count: r.cnt }))
+    } else if (sourceKind === 'utm') {
+      const key = sourceValue || utmOptions[0]
+      const rows = (srcUtm || []).filter(r => (r.utm_source || '(none)') === key)
+      return rows.map(r => ({ type: r.type, count: r.cnt }))
+    }
+    return []
+  }, [sourceKind, sourceValue, srcReferrer, srcUtm, referrerOptions, utmOptions])
+
+  const completionRate = stats ? (stats.completedSessions / Math.max(stats.totalSessions, 1)) * 100 : 0
+
+  // Early returns AFTER all hooks
   if (loading) {
     return (
       <div className="analytics-dashboard">
@@ -130,37 +164,6 @@ export default function AnalyticsDashboard() {
       </div>
     )
   }
-
-  const completionRate = stats ? (stats.completedSessions / Math.max(stats.totalSessions, 1)) * 100 : 0
-
-  // Derived distributions by selected period
-  const periodDistribution: TypeDistribution[] = useMemo(() => {
-    if (period === '7d') return typeDistribution7d
-    if (period === '90d') return typeDistribution90d
-    return typeDistribution30d
-  }, [period, typeDistribution7d, typeDistribution30d, typeDistribution90d])
-
-  // Source options and filtered distribution (30d basis)
-  const referrerOptions = useMemo(() => {
-    const s = new Set((srcReferrer || []).map(r => r.referrer || '(none)'))
-    return Array.from(s)
-  }, [srcReferrer])
-  const utmOptions = useMemo(() => {
-    const s = new Set((srcUtm || []).map(r => r.utm_source || '(none)'))
-    return Array.from(s)
-  }, [srcUtm])
-  const sourceDistribution = useMemo(() => {
-    if (sourceKind === 'referrer') {
-      const key = sourceValue || referrerOptions[0]
-      const rows = (srcReferrer || []).filter(r => (r.referrer || '(none)') === key)
-      return rows.map(r => ({ type: r.type, count: r.cnt }))
-    } else if (sourceKind === 'utm') {
-      const key = sourceValue || utmOptions[0]
-      const rows = (srcUtm || []).filter(r => (r.utm_source || '(none)') === key)
-      return rows.map(r => ({ type: r.type, count: r.cnt }))
-    }
-    return []
-  }, [sourceKind, sourceValue, srcReferrer, srcUtm, referrerOptions, utmOptions])
 
   return (
     <div className="analytics-dashboard">

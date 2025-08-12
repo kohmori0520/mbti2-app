@@ -9,6 +9,7 @@
     "typecheck": "tsc -b --noEmit",
     "preview": "vite preview",
     "seed:content": "node scripts/seed_content.mjs",
+    "seed:dummy": "node scripts/seed_dummy_data.mjs",
     "api:dev": "node server/index.js",
     "analyze:logs": "node scripts/analyze_logs.mjs",
     "apply:weights": "node scripts/apply_weight_suggestions.mjs",

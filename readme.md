@@ -66,7 +66,14 @@ cp .env.example .env.local
 brew install supabase/tap/supabase
 
 # ローカルSupabaseを起動
-npm run supabase:start
+supabase start
+
+# スキーマ適用とデータ投入
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f supabase/schema.sql
+npm run seed:content
+
+# ダミーデータ投入（開発・テスト用）
+npm run seed:dummy
 
 # 開発サーバー起動
 npm run dev
@@ -74,16 +81,20 @@ npm run dev
 
 **☁️ クラウド版（本番デプロイ用）:**
 1. [Supabase](https://supabase.com) でプロジェクト作成
-2. 環境変数を設定:
+2. 環境変数を`.env.local`に設定:
 ```bash
-# .env.local に追加
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
-3. データベーススキーマを作成:
+3. データベーススキーマとデータを投入:
 ```bash
-# Supabase SQL Editor で実行
-cat supabase/schema.sql
+# SQL Editor で supabase/schema.sql の内容を実行
+# またはCLI経由で:
+supabase db push
+
+# シードデータ投入
+node scripts/seed_content.mjs
 ```
 
 ### 3️⃣ 開発環境の起動
@@ -133,8 +144,44 @@ npm run api:dev
 
 ## ⚙️ 環境変数設定
 
+### 📁 環境ファイル構成
+
+```
+.env.example           # テンプレートファイル（Git管理対象）
+.env                   # デフォルト設定（リモートSupabase）
+.env.local             # 本番用設定（Git管理対象外）
+.env.development.local # ローカル開発用設定（Git管理対象外）
+```
+
+### 🏠 ローカル開発環境
+
+**`.env.development.local`（ローカルSupabase使用時）:**
 ```bash
-# .env ファイルに以下を設定
+# ローカルSupabase設定
+VITE_SUPABASE_URL=http://127.0.0.1:54321
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+
+# シードスクリプト用
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
+SUPABASE_URL=http://127.0.0.1:54321
+```
+
+### ☁️ 本番環境
+
+**`.env.local`（リモートSupabase使用時）:**
+```bash
+# 本番Supabase設定
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your_anon_key
+
+# シードスクリプト用（必要に応じて）
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+### 🤖 AI分析機能（オプション）
+
+```bash
+# OpenAI API設定
 OPENAI_API_KEY=your-openai-api-key-here
 
 # オプション（デフォルト値あり）
@@ -143,7 +190,36 @@ ANALYZE_RETRY_ATTEMPTS=3         # リトライ回数
 ANALYZE_TIMEOUT_MS=15000         # タイムアウト（15秒）
 ```
 
-> ⚠️ **重要**: `.env` 設定後は `npm run api:dev` を再起動してください
+### 🔄 環境切り替え手順
+
+**ローカル開発に切り替え:**
+```bash
+# 1. ローカルSupabaseを起動
+supabase start
+
+# 2. .env.development.localがあることを確認
+ls -la .env*
+
+# 3. 開発サーバー起動（自動的に.env.development.localを使用）
+npm run dev
+```
+
+**本番ビルドテスト:**
+```bash
+# 1. .env.localに本番設定があることを確認
+cat .env.local
+
+# 2. 本番用ビルド（.env.localを使用）
+npm run build
+
+# 3. プレビュー
+npm run preview
+```
+
+> ⚠️ **重要**: 
+> - `.env.development.local` - 開発時（`npm run dev`）に使用
+> - `.env.local` - ビルド時（`npm run build`）に使用
+> - 環境変数変更後は開発サーバーを再起動してください
 
 ---
 
@@ -226,6 +302,57 @@ Vercel Dashboard → Project Settings → Environment Variables
 
 ### 3️⃣ 自動デプロイ
 メインブランチにプッシュすると自動でデプロイされます 🎉
+
+---
+
+## ✅ 動作確認手順
+
+### 📋 ローカル環境での確認
+
+```bash
+# 1. Supabaseの稼働確認
+supabase status
+# ✅ API URL: http://127.0.0.1:54321 が表示されること
+
+# 2. データベース接続確認
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -c "SELECT COUNT(*) FROM personas;"
+# ✅ 28行が返されること
+
+# 3. ダミーデータ確認（投入している場合）
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -c "SELECT COUNT(*) FROM results;"
+# ✅ 100行が返されること（ダミーデータ投入後）
+
+# 3. アプリケーション起動確認
+npm run dev
+# ✅ http://localhost:5175 でアプリが表示されること
+
+# 4. データ保存確認（実際に診断を1つ完了してみる）
+# ✅ 診断結果が表示され、Supabase Studioでデータ確認可能
+```
+
+### 🌐 本番環境での確認
+
+```bash
+# 1. 本番用ビルド
+npm run build
+# ✅ エラーなくビルド完了
+
+# 2. プレビュー起動
+npm run preview
+# ✅ http://localhost:4173 で本番ビルドが動作
+
+# 3. リモートSupabaseでのデータ保存確認
+# ✅ .env.localのリモート設定で診断完了＆データ保存確認
+```
+
+### 🛠️ Supabase Studio での確認
+
+1. http://127.0.0.1:54323 を開く（ローカル）
+2. 以下のテーブルにデータが存在することを確認:
+   - `personas` - 28行
+   - `persona_keywords` - 72行  
+   - `type_relationships` - 192行
+   - `sessions`, `answers`, `results` - 診断完了後にデータ追加
 
 ---
 
