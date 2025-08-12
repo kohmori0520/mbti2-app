@@ -3,30 +3,67 @@ import details from '../data/persona_details.json'
 import type { PersonaDetailsMap } from '../types'
 import { Link } from 'react-router-dom'
 import { makeTypeAvatar } from '../utils/avatar'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 export default function TypesIndex(){
   const map = details as unknown as PersonaDetailsMap
   const entries = Object.entries(map).sort(([a],[b])=>a.localeCompare(b))
   return (
-    <div className="container">
-      <div className="card">
-        <h2 className="text-title-2" style={{marginBottom:12}}>タイプ辞典</h2>
-        <div className="small" style={{marginBottom:16}}>全タイプの概要を一覧できます。カードをクリックすると詳細へ。</div>
-        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(180px,1fr))', gap:12}}>
-          {entries.map(([code, d])=>{
-            const img = (d as any).image || makeTypeAvatar(code, d.color)
-            return (
-              <Link key={code} to={`/types/${code}`} className="card" style={{padding:12, textDecoration:'none'}}>
-                <div style={{border:'1px solid rgba(0,0,0,0.08)', borderRadius:12, overflow:'hidden', background:'#f5f5f7'}}>
-                  <img src={img} alt={d.title} style={{width:'100%', aspectRatio:'4/3', objectFit:'cover', display:'block'}}/>
-                </div>
-                <div className="text-body" style={{marginTop:8}}>{d.title}</div>
-                <div className="small" style={{color:'var(--color-text-secondary)'}}>{d.oneLiner}</div>
-              </Link>
-            )
-          })}
+    <div className="app-layout">
+      <Header showTitle={true} variant="frosted" />
+      <main className="app-main">
+        <div className="container">
+          <div className="types-header">
+            <div className="header-content">
+              <h1 className="types-title">タイプ辞典</h1>
+              <p className="types-subtitle">
+                16の性格タイプを探索し、自分や他人をより深く理解しましょう
+              </p>
+            </div>
+          </div>
+          
+          <div className="types-grid-container">
+            <div className="types-grid">
+              {entries.map(([code, d])=>{
+                const img = (d as any).image || makeTypeAvatar(code, d.color)
+                return (
+                  <Link 
+                    key={code} 
+                    to={`/types/${code}`} 
+                    className="type-card-modern"
+                    style={{
+                      '--accent-color': d.color
+                    } as React.CSSProperties}
+                  >
+                    <div className="type-card-image">
+                      <img src={img} alt={d.title} />
+                      <div className="type-card-overlay">
+                        <span className="type-code">{code}</span>
+                      </div>
+                    </div>
+                    <div className="type-card-content">
+                      <h3 className="type-card-title">{d.title}</h3>
+                      <p className="type-card-description">{d.oneLiner}</p>
+                      <div className="type-card-keywords">
+                        {(d.keywords || []).slice(0, 2).map((keyword, i) => (
+                          <span key={i} className="keyword-chip">{keyword}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="type-card-arrow">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M7.5 15l5-5-5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
+      <Footer showDetails={false} variant="default" />
     </div>
   )
 }

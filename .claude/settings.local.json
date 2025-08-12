@@ -9,7 +9,8 @@
       "Bash(echo:*)",
       "Bash(supabase start:*)",
       "Bash(psql:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(supabase status:*)"
     ],
     "deny": []
   }

@@ -4,6 +4,12 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
+import dotenv from 'dotenv'
+
+dotenv.config({ path: '.env.development.local' })
+
+console.log(process.env.SUPABASE_URL)
+console.log(process.env.SUPABASE_SERVICE_ROLE_KEY)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -27,8 +33,13 @@ async function loadJson(relPath) {
   return JSON.parse(txt)
 }
 
+/**
+ * Track known persona codes to satisfy FKs when seeding related tables
+ */
+let personaCodes = new Set()
+
 async function upsertPersonas() {
-  const details = await loadJson('../src/data/persona_details.json')
+  const details = await loadJson('src/data/persona_details.json')
   // personas
   const personas = Object.entries(details).map(([code, d]) => ({
     code,
@@ -42,6 +53,7 @@ async function upsertPersonas() {
     const { error } = await supabase.from('personas').upsert(personas, { onConflict: 'code' })
     if (error) throw error
   }
+  personaCodes = new Set(personas.map(p => p.code))
   // keywords/strengths/growth
   const keywords = []
   const strengths = []
@@ -66,12 +78,18 @@ async function upsertPersonas() {
 }
 
 async function upsertCareer() {
-  const career = await loadJson('../src/data/career_guidance.json')
+  const career = await loadJson('src/data/career_guidance.json')
   const careerRows = []
   const roles = []
   const growths = []
   const metrics = []
+  // ensure referenced persona codes exist
+  const missingPersonaPlaceholders = []
   for (const [code, c] of Object.entries(career.career_paths || {})) {
+    if (!personaCodes.has(code)) {
+      missingPersonaPlaceholders.push({ code, title: code, one_liner: null, summary_long: null, color: null, image: null })
+      personaCodes.add(code)
+    }
     const env = c.work_environment || {}
     careerRows.push({
       code,
@@ -82,6 +100,10 @@ async function upsertCareer() {
     for (const r of c.ideal_roles || []) roles.push({ code, role: r })
     for (const g of c.growth_opportunities || []) growths.push({ code, item: g })
     for (const m of c.success_metrics || []) metrics.push({ code, metric: m })
+  }
+  if (missingPersonaPlaceholders.length) {
+    const { error } = await supabase.from('personas').upsert(missingPersonaPlaceholders, { onConflict: 'code' })
+    if (error) throw error
   }
   if (careerRows.length) {
     const { error } = await supabase.from('career').upsert(careerRows, { onConflict: 'code' })
@@ -102,14 +124,41 @@ async function upsertCareer() {
 }
 
 async function upsertRelationships() {
-  const rel = await loadJson('../src/data/type_relationships.json')
+  const rel = await loadJson('src/data/type_relationships.json')
   const comp = rel.compatibility || {}
   const rows = []
+  const missingPersonaPlaceholders = []
   for (const [code, obj] of Object.entries(comp)) {
+    if (!personaCodes.has(code)) {
+      missingPersonaPlaceholders.push({ code, title: code, one_liner: null, summary_long: null, color: null, image: null })
+      personaCodes.add(code)
+    }
     const desc = obj.descriptions || {}
-    for (const m of obj.best_matches || []) rows.push({ code, kind: 'best', match_code: m, description: desc[m] || null })
-    for (const m of obj.good_matches || []) rows.push({ code, kind: 'good', match_code: m, description: desc[m] || null })
-    for (const m of obj.challenging || []) rows.push({ code, kind: 'challenging', match_code: m, description: desc[m] || null })
+    for (const m of obj.best_matches || []) {
+      if (!personaCodes.has(m)) {
+        missingPersonaPlaceholders.push({ code: m, title: m, one_liner: null, summary_long: null, color: null, image: null })
+        personaCodes.add(m)
+      }
+      rows.push({ code, kind: 'best', match_code: m, description: desc[m] || null })
+    }
+    for (const m of obj.good_matches || []) {
+      if (!personaCodes.has(m)) {
+        missingPersonaPlaceholders.push({ code: m, title: m, one_liner: null, summary_long: null, color: null, image: null })
+        personaCodes.add(m)
+      }
+      rows.push({ code, kind: 'good', match_code: m, description: desc[m] || null })
+    }
+    for (const m of obj.challenging || []) {
+      if (!personaCodes.has(m)) {
+        missingPersonaPlaceholders.push({ code: m, title: m, one_liner: null, summary_long: null, color: null, image: null })
+        personaCodes.add(m)
+      }
+      rows.push({ code, kind: 'challenging', match_code: m, description: desc[m] || null })
+    }
+  }
+  if (missingPersonaPlaceholders.length) {
+    const { error } = await supabase.from('personas').upsert(missingPersonaPlaceholders, { onConflict: 'code' })
+    if (error) throw error
   }
   if (rows.length) {
     const { error } = await supabase.from('type_relationships').upsert(rows, { onConflict: 'code,kind,match_code' })

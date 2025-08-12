@@ -95,7 +95,10 @@ export default function QuestionCard({ q, onPick, onBack, onSkip, canBack = fals
                 onClick={() => handleOptionClick(opt.key)}
                 disabled={isAnimating}
                 aria-keyshortcuts={shortcut}
-                title={`ショートカット: ${shortcut}`}
+                aria-describedby={`option-${opt.key}-desc`}
+                aria-pressed={isSelected}
+                role="option"
+                title={`選択肢${opt.key}: ${opt.label} (ショートカット: ${shortcut})`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="option-header">

@@ -6,7 +6,7 @@ import ProgressBar from './components/ProgressBar'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import CompletionAnimation from './components/CompletionAnimation'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { makeTypeAvatar } from './utils/avatar'
 import details from './data/persona_details.json'
 import type { PersonaDetailsMap } from './types'
@@ -17,6 +17,8 @@ import { MigrationService } from './utils/migration'
 type Answers = Record<number, 'A'|'B'>
 
 export default function App(){
+  const location = useLocation()
+  const navigate = useNavigate()
   // 質問キーを '1'|'2' → 'A'|'B' に正規化
   const qs = (questions as Question[]).map(q => ({
     ...q,
@@ -33,6 +35,29 @@ export default function App(){
   const [showCompletionAnimation, setShowCompletionAnimation] = useState(false)
   const [completionAnimationFinished, setCompletionAnimationFinished] = useState(false)
   const done = index >= qs.length
+  // クエリで結果表示/再診断をサポート
+  useEffect(() => {
+    const sp = new URLSearchParams(location.search)
+    if (sp.get('restart') === '1') {
+      localStorage.removeItem('answers')
+      setAnswers({})
+      setIndex(0)
+      // クエリを消す
+      navigate('/', { replace: true })
+    }
+    if (sp.get('show') === 'result') {
+      // 直接結果を表示（アニメーションはスキップ）
+      setCompletionAnimationFinished(true)
+      if (location.pathname !== '/') navigate('/', { replace: true })
+    }
+  }, [location.search])
+
+  // リロード直後など、既に全問回答済みなら即結果を表示
+  useEffect(() => {
+    if (done && !showCompletionAnimation && !completionAnimationFinished) {
+      setCompletionAnimationFinished(true)
+    }
+  }, [done, showCompletionAnimation, completionAnimationFinished])
   const appStartTsRef = useRef<number>(Date.now())
   const lastAnswerTsRef = useRef<number>(Date.now())
 
@@ -206,15 +231,32 @@ export default function App(){
           {!done ? (
             <>
               <div className="intro-section">
-                <h1 className="text-title-1">次世代タイプ診断</h1>
-                <div className="intro-meta">
-                  <span className="question-count">全{qs.length}問</span>
-                  <span className="time-estimate">3〜5分で完了</span>
+                <div className="hero-content">
+                  <div className="hero-badge">
+                    <span className="badge-text">AI搭載</span>
+                    <div className="badge-icon">✨</div>
+                  </div>
+                  <h1 className="hero-title">次世代タイプ診断</h1>
+                  <p className="hero-subtitle">
+                    科学的アプローチで、あなたの本当の性格を解き明かす
+                  </p>
+                  <div className="hero-stats">
+                    <div className="stat-item">
+                      <div className="stat-number">{qs.length}</div>
+                      <div className="stat-label">質問</div>
+                    </div>
+                    <div className="stat-divider"></div>
+                    <div className="stat-item">
+                      <div className="stat-number">3-5</div>
+                      <div className="stat-label">分で完了</div>
+                    </div>
+                    <div className="stat-divider"></div>
+                    <div className="stat-item">
+                      <div className="stat-number">16</div>
+                      <div className="stat-label">タイプ</div>
+                    </div>
+                  </div>
                 </div>
-                <p className="intro-description">
-                  あなたの本当の性格を科学的に分析します。
-                  直感で答えるだけで、詳細な結果を得られます。
-                </p>
               </div>
               
               <div className="question-section">
